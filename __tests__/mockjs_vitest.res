@@ -1,4 +1,4 @@
-open Jest
+open Vitest
 open ExpectJs
 
 /* TODO: move to BS std lib */
@@ -12,28 +12,28 @@ let call = (self, arg) => call(self, (), arg)
 let _ = {
   describe("inferred_fn", _ => {
     test("returns undefined", _ => {
-      let mockFn = JestJs.inferred_fn()
+      let mockFn = Mock.inferred_fn()
       let fn = MockJs.fn(mockFn)
 
       expect(call(fn, ()))->toBeUndefined
     })
 
     test("black hole for argument type object", _ => {
-      let mockFn = JestJs.inferred_fn()
+      let mockFn = Mock.inferred_fn()
       let fn = MockJs.fn(mockFn)
 
       expect(call(fn, {"property": 42}))->toBeUndefined
     })
 
     test("black hole for argument type string", _ => {
-      let mockFn = JestJs.inferred_fn()
+      let mockFn = Mock.inferred_fn()
       let fn = MockJs.fn(mockFn)
 
       expect(call(fn, "some string"))->toBeUndefined
     })
 
     test("calls - records call arguments", _ => {
-      let mockFn = JestJs.inferred_fn()
+      let mockFn = Mock.inferred_fn()
       let fn = MockJs.fn(mockFn)
 
       let _ = call(fn, "first")
@@ -44,14 +44,14 @@ let _ = {
     })
 
     test("instances - sanity check - is empty array", _ => {
-      let mockFn = JestJs.inferred_fn()
+      let mockFn = Mock.inferred_fn()
       let instances = MockJs.instances(mockFn)
 
       expect(instances)->toEqual([])
     })
 
     test("instances - records created instances", _ => {
-      let mockFn = JestJs.fn(%raw("function (n) { this.n = n; }"))
+      let mockFn = Mock.fn(%raw("function (n) { this.n = n; }"))
 
       mockFn->MockJs.new1(4)->ignore
       mockFn->MockJs.new1(7)->ignore
@@ -62,7 +62,7 @@ let _ = {
     })
 
     test("mockClear - resets calls", _ => {
-      let mockFn = JestJs.inferred_fn()
+      let mockFn = Mock.inferred_fn()
       let fn = MockJs.fn(mockFn)
 
       let before = mockFn->MockJs.calls
@@ -75,7 +75,7 @@ let _ = {
     })
 
     test("mockReset - resets calls", _ => {
-      let mockFn = JestJs.inferred_fn()
+      let mockFn = Mock.inferred_fn()
       let fn = MockJs.fn(mockFn)
 
       let before = mockFn->MockJs.calls
@@ -88,7 +88,7 @@ let _ = {
     })
 
     test("mockReset - resets implementations", _ => {
-      let mockFn = JestJs.inferred_fn()
+      let mockFn = Mock.inferred_fn()
       mockFn->MockJs.mockReturnValue(Js.Undefined.return(128))->ignore
       let fn = MockJs.fn(mockFn)
 
@@ -100,7 +100,7 @@ let _ = {
     })
 
     test("mockImplementation - sets implementation to use for subsequent invocations", _ => {
-      let mockFn = JestJs.inferred_fn()
+      let mockFn = Mock.inferred_fn()
       let fn = MockJs.fn(mockFn)
 
       let before = call(fn, 10)
@@ -114,7 +114,7 @@ let _ = {
     })
 
     test("mockImplementationOnce - queues implementation for one subsequent invocation", _ => {
-      let mockFn = JestJs.inferred_fn()
+      let mockFn = Mock.inferred_fn()
       let fn = MockJs.fn(mockFn)
 
       let before = call(fn, 10)
@@ -132,7 +132,7 @@ let _ = {
     })
 
     test("mockReturnThis - returns `this` on subsequent invocations", _ => {
-      let mockFn = JestJs.inferred_fn()
+      let mockFn = Mock.inferred_fn()
       let this = "this"
       let fn = bindThis(mockFn->MockJs.fn, this)
 
@@ -147,7 +147,7 @@ let _ = {
     })
 
     test("mockReturnValue - returns given value on subsequent invocations", _ => {
-      let mockFn = JestJs.inferred_fn()
+      let mockFn = Mock.inferred_fn()
       let fn = MockJs.fn(mockFn)
 
       let before = call(fn, 10)
@@ -161,7 +161,7 @@ let _ = {
     })
 
     test("mockReturnValueOnce - queues implementation for one subsequent invocation", _ => {
-      let mockFn = JestJs.inferred_fn()
+      let mockFn = Mock.inferred_fn()
       let fn = MockJs.fn(mockFn)
 
       let before = call(fn, 10)
@@ -186,7 +186,7 @@ let _ = {
  */
 
     test("mockClear - resets instances", _ => {
-      let mockFn = JestJs.fn(%raw("function (n) { this.n = n; }"))
+      let mockFn = Mock.fn(%raw("function (n) { this.n = n; }"))
 
       let before = mockFn->MockJs.instances
 
@@ -205,14 +205,14 @@ let _ = {
 
   describe("fn", _ => {
     test("calls implementation", _ => {
-      let mockFn = JestJs.fn(a => string_of_int(a))
+      let mockFn = Mock.fn(a => string_of_int(a))
       let fn = MockJs.fn(mockFn)
 
       expect(fn(18))->toBe("18")
     })
 
     test("calls - records call arguments", _ => {
-      let mockFn = JestJs.fn(a => string_of_int(a))
+      let mockFn = Mock.fn(a => string_of_int(a))
 
       let _ = MockJs.fn(mockFn)(74)
       let _ = MockJs.fn(mockFn)(89435)
@@ -222,7 +222,7 @@ let _ = {
     })
 
     test("mockClear - resets calls", _ => {
-      let mockFn = JestJs.fn(a => string_of_int(a))
+      let mockFn = Mock.fn(a => string_of_int(a))
 
       let before = mockFn->MockJs.calls
       let _ = (MockJs.fn(mockFn)(1), MockJs.fn(mockFn)(2))
@@ -234,7 +234,7 @@ let _ = {
     })
 
     test("mockReset - resets calls", _ => {
-      let mockFn = JestJs.fn(a => string_of_int(a))
+      let mockFn = Mock.fn(a => string_of_int(a))
       let fn = MockJs.fn(mockFn)
 
       let before = mockFn->MockJs.calls
@@ -250,7 +250,7 @@ let _ = {
     Skip.test(
       "mockReset - resets implementations - skipped for now as this removes the original implementation too causing an undefnied to be returned",
       _ => {
-        let mockFn = JestJs.fn(a => string_of_int(a))
+        let mockFn = Mock.fn(a => string_of_int(a))
         mockFn->MockJs.mockReturnValue("128")->ignore
         let fn = MockJs.fn(mockFn)
 
@@ -263,7 +263,7 @@ let _ = {
     )
 
     test("mockImplementation - sets implementation to use for subsequent invocations", _ => {
-      let mockFn = JestJs.fn(a => string_of_int(a))
+      let mockFn = Mock.fn(a => string_of_int(a))
       let fn = MockJs.fn(mockFn)
 
       let before = fn(10)
@@ -273,7 +273,7 @@ let _ = {
     })
 
     test("mockImplementationOnce - queues implementation for one subsequent invocation", _ => {
-      let mockFn = JestJs.fn(a => string_of_int(a))
+      let mockFn = Mock.fn(a => string_of_int(a))
       let fn = MockJs.fn(mockFn)
 
       let before = fn(10)
@@ -285,7 +285,7 @@ let _ = {
 
     /* mockReturnThis doesn't make sense for native functions
   test "mockReturnThis - returns `this` on subsequent invocations" (fun _ ->
-    let mockFn = JestJs.fn (fun a -> string_of_int a) in
+    let mockFn = Mock.fn (fun a -> string_of_int a) in
     let this = "this" in
     let fn = bindThis (mockFn -> MockJs.fn) this in
 
@@ -300,7 +300,7 @@ let _ = {
  */
 
     test("mockReturnValue - returns given value on subsequent invocations", _ => {
-      let mockFn = JestJs.fn(a => string_of_int(a))
+      let mockFn = Mock.fn(a => string_of_int(a))
       let fn = MockJs.fn(mockFn)
 
       let before = fn(10)
@@ -310,7 +310,7 @@ let _ = {
     })
 
     test("mockReturnValueOnce - queues implementation for one subsequent invocation", _ => {
-      let mockFn = JestJs.fn(a => string_of_int(a))
+      let mockFn = Mock.fn(a => string_of_int(a))
       let fn = MockJs.fn(mockFn)
 
       let before = fn(10)
@@ -323,7 +323,7 @@ let _ = {
 
   describe("fn2", _ =>
     test("calls implementation", _ => {
-      let mockFn = JestJs.fn2((a, b) => string_of_int(a + b))
+      let mockFn = Mock.fn2((a, b) => string_of_int(a + b))
       let fn = MockJs.fn(mockFn)
 
       expect(call2(fn, 18, 24))->toBe("42")
@@ -332,7 +332,7 @@ let _ = {
 
   /*
   test "calls - records call arguments" (fun _ ->
-    let mockFn = JestJs.fn2 ((fun a b -> string_of_int (a + b)) [@bs]) in
+    let mockFn = Mock.fn2 ((fun a b -> string_of_int (a + b)) [@bs]) in
 
     let _ = MockJs.fn mockFn 18 24 in
     let calls  = mockFn -> MockJs.calls in
@@ -343,7 +343,7 @@ let _ = {
 
   describe("MockJs.new", _ => {
     test("MockJs.new0", _ => {
-      let mockFn = JestJs.fn(%raw("function () { this.n = 42; }"))
+      let mockFn = Mock.fn(%raw("function () { this.n = 42; }"))
 
       let instance = mockFn->MockJs.new0
 
@@ -351,7 +351,7 @@ let _ = {
     })
 
     test("MockJs.new1", _ => {
-      let mockFn = JestJs.fn(%raw("function (n) { this.n = n; }"))
+      let mockFn = Mock.fn(%raw("function (n) { this.n = n; }"))
 
       let instance = mockFn->MockJs.new1(4)
 
@@ -359,7 +359,7 @@ let _ = {
     })
 
     test("MockJs.new2", _ => {
-      let mockFn = JestJs.fn2(%raw("function (a, b) { this.n = a * b; }"))
+      let mockFn = Mock.fn2(%raw("function (a, b) { this.n = a * b; }"))
 
       let instance = mockFn->MockJs.new2(4, 7)
 

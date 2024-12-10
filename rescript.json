@@ -1,10 +1,10 @@
 {
-  "name": "@glennsl/rescript-jest",
+  "name": "@greenfinity/rescript-vitest",
   "namespace": false,
   "bsc-flags": ["-bs-no-version-header", "-bs-super-errors"],
-  "suffix": ".bs.js",
+  "suffix": ".bs.mjs",
   "package-specs": {
-    "module": "commonjs",
+    "module": "esmodule",
     "in-source": true
   },
   "sources": [
@@ -17,6 +17,8 @@
     }
   ],
   "warnings": {
-    "number": "-44"
-  }
+    "number": "-44",
+    "error": "+101"
+  },
+  "bs-dependencies": []
 }
