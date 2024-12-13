@@ -1,4 +1,4 @@
-open Jest
+open Vitest
 
 type test_record = {value: string}
 
@@ -23,7 +23,7 @@ let () = {
     test("toEqual", () => expect(1 + 2)->toEqual(3))
     test("toMatch", () => expect("banana")->toMatch("nana"))
     test("toMatchRe", () => expect("banana")->toMatchRe(%re("/ana/")))
-    test("toThrow", () => expect(() => assert false)->toThrow)
+    test("toThrow", () => expect(() => assert(false))->toThrow)
 
     test("toMatchInlineSnapshot", () => expect("foo")->toMatchInlineSnapshot("\"foo\""))
     test("toMatchSnapshot", () => expect("foo")->toMatchSnapshot)

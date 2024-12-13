@@ -8,29 +8,29 @@ module type Asserter = {
 module Runner: (A: Asserter) =>
 {
   let test: (string, unit => A.t<_>) => unit
-  let testAsync: (string, ~timeout: int=?, (A.t<_> => unit) => unit) => unit
+  // let testAsync: (string, ~timeout: int=?, (A.t<_> => unit) => unit) => unit
   let testPromise: (string, ~timeout: int=?, unit => promise<A.t<_>>) => unit
   let testAll: (string, list<'a>, 'a => A.t<_>) => unit
   let testAllPromise: (string, list<'a>, ~timeout: int=?, 'a => promise<A.t<_>>) => unit
 
   let describe: (string, unit => unit) => unit
 
-  @val external beforeAll: (. unit => unit) => unit = "beforeAll"
-  let beforeAllAsync: (~timeout: int=?, (unit => unit) => unit) => unit
+  @module("vitest") external beforeAll: (unit => unit) => unit = "beforeAll"
+  // let beforeAllAsync: (~timeout: int=?, (unit => unit) => unit) => unit
   let beforeAllPromise: (~timeout: int=?, unit => promise<'a>) => unit
-  @val external beforeEach: (. unit => unit) => unit = "beforeEach"
-  let beforeEachAsync: (~timeout: int=?, (unit => unit) => unit) => unit
+  @module("vitest") external beforeEach: (unit => unit) => unit = "beforeEach"
+  // let beforeEachAsync: (~timeout: int=?, (unit => unit) => unit) => unit
   let beforeEachPromise: (~timeout: int=?, unit => promise<'a>) => unit
-  @val external afterAll: (. unit => unit) => unit = "afterAll"
-  let afterAllAsync: (~timeout: int=?, (unit => unit) => unit) => unit
+  @module("vitest") external afterAll: (unit => unit) => unit = "afterAll"
+  // let afterAllAsync: (~timeout: int=?, (unit => unit) => unit) => unit
   let afterAllPromise: (~timeout: int=?, unit => promise<'a>) => unit
-  @val external afterEach: (. unit => unit) => unit = "afterEach"
-  let afterEachAsync: (~timeout: int=?, (unit => unit) => unit) => unit
+  @module("vitest") external afterEach: (unit => unit) => unit = "afterEach"
+  // let afterEachAsync: (~timeout: int=?, (unit => unit) => unit) => unit
   let afterEachPromise: (~timeout: int=?, unit => promise<'a>) => unit
 
   module Only: {
     let test: (string, unit => A.t<_>) => unit
-    let testAsync: (string, ~timeout: int=?, (A.t<_> => unit) => unit) => unit
+    // let testAsync: (string, ~timeout: int=?, (A.t<_> => unit) => unit) => unit
     let testPromise: (string, ~timeout: int=?, unit => promise<A.t<_>>) => unit
     let testAll: (string, list<'a>, 'a => A.t<_>) => unit
     let testAllPromise: (string, list<'a>, ~timeout: int=?, 'a => promise<A.t<_>>) => unit
@@ -39,7 +39,7 @@ module Runner: (A: Asserter) =>
 
   module Skip: {
     let test: (string, unit => A.t<_>) => unit
-    let testAsync: (string, ~timeout: int=?, (A.t<_> => unit) => unit) => unit
+    // let testAsync: (string, ~timeout: int=?, (A.t<_> => unit) => unit) => unit
     let testPromise: (string, ~timeout: int=?, unit => promise<A.t<_>>) => unit
     let testAll: (string, list<'a>, 'a => A.t<_>) => unit
     let testAllPromise: (string, list<'a>, ~timeout: int=?, 'a => promise<A.t<_>>) => unit
@@ -48,29 +48,24 @@ module Runner: (A: Asserter) =>
 }
 
 let test: (string, unit => assertion) => unit
-let testAsync: (string, ~timeout: int=?, (assertion => unit) => unit) => unit
+// let testAsync: (string, ~timeout: int=?, (assertion => unit) => unit) => unit
 let testPromise: (string, ~timeout: int=?, unit => promise<assertion>) => unit
 let testAll: (string, list<'a>, 'a => assertion) => unit
 let testAllPromise: (string, list<'a>, ~timeout: int=?, 'a => promise<assertion>) => unit
 
 let describe: (string, unit => unit) => unit
 
-@val external beforeAll: (. unit => unit) => unit = "beforeAll"
-let beforeAllAsync: (~timeout: int=?, (unit => unit) => unit) => unit
+@module("vitest") external beforeAll: (unit => unit) => unit = "beforeAll"
 let beforeAllPromise: (~timeout: int=?, unit => promise<'a>) => unit
-@val external beforeEach: (. unit => unit) => unit = "beforeEach"
-let beforeEachAsync: (~timeout: int=?, (unit => unit) => unit) => unit
+@module("vitest") external beforeEach: (unit => unit) => unit = "beforeEach"
 let beforeEachPromise: (~timeout: int=?, unit => promise<'a>) => unit
-@val external afterAll: (. unit => unit) => unit = "afterAll"
-let afterAllAsync: (~timeout: int=?, (unit => unit) => unit) => unit
+@module("vitest") external afterAll: (unit => unit) => unit = "afterAll"
 let afterAllPromise: (~timeout: int=?, unit => promise<'a>) => unit
-@val external afterEach: (. unit => unit) => unit = "afterEach"
-let afterEachAsync: (~timeout: int=?, (unit => unit) => unit) => unit
+@module("vitest") external afterEach: (unit => unit) => unit = "afterEach"
 let afterEachPromise: (~timeout: int=?, unit => promise<'a>) => unit
 
 module Only: {
   let test: (string, unit => assertion) => unit
-  let testAsync: (string, ~timeout: int=?, (assertion => unit) => unit) => unit
   let testPromise: (string, ~timeout: int=?, unit => promise<assertion>) => unit
   let testAll: (string, list<'a>, 'a => assertion) => unit
   let testAllPromise: (string, list<'a>, ~timeout: int=?, 'a => promise<assertion>) => unit
@@ -79,7 +74,6 @@ module Only: {
 
 module Skip: {
   let test: (string, unit => assertion) => unit
-  let testAsync: (string, ~timeout: int=?, (assertion => unit) => unit) => unit
   let testPromise: (string, ~timeout: int=?, unit => promise<assertion>) => unit
   let testAll: (string, list<'a>, 'a => assertion) => unit
   let testAllPromise: (string, list<'a>, ~timeout: int=?, 'a => promise<assertion>) => unit
@@ -161,7 +155,7 @@ module MockJs: {
 
   let new0: fn<unit => 'ret, unit, 'ret> => 'ret
   let new1: (fn<'a => 'ret, 'a, 'ret>, 'a) => 'ret
-  let new2: (fn<(. 'a, 'b) => 'ret, ('a, 'b), 'ret>, 'a, 'b) => 'ret
+  let new2: (fn<('a, 'b) => 'ret, ('a, 'b), 'ret>, 'a, 'b) => 'ret
 
   external fn: fn<'fn, _, _> => 'fn = "%identity"
   let calls: fn<_, 'args, _> => array<'args>
@@ -182,39 +176,42 @@ module MockJs: {
   external mockReturnValueOnce: (fn<_, _, 'ret> as 'self, 'ret) => 'self = "mockReturnValueOnce"
 }
 
-module Jest: {
+module Vi: {
   type fakeTimerImplementation = [#legacy | #modern]
-  @val external clearAllTimers: unit => unit = "jest.clearAllTimers"
-  @val external runAllTicks: unit => unit = "jest.runAllTicks"
-  @val external runAllTimers: unit => unit = "jest.runAllTimers"
-  @val external runAllImmediates: unit => unit = "jest.runAllImmediates"
-  @val external runTimersToTime: int => unit = "jest.runTimersToTime"
-  @val external advanceTimersByTime: int => unit = "jest.advanceTimersByTime"
-  @val external runOnlyPendingTimers: unit => unit = "jest.runOnlyPendingTimers"
-  @val external useFakeTimersImplementation: fakeTimerImplementation => unit = "jest.useFakeTimers"
+  @module("vitest") @scope("vi") external clearAllTimers: unit => unit = "clearAllTimers"
+  @module("vitest") @scope("vi") external runAllTicks: unit => unit = "runAllTicks"
+  @module("vitest") @scope("vi") external runAllTimers: unit => unit = "runAllTimers"
+  // @module("vitest") @scope("vi") external runAllImmediates: unit => unit = "runAllImmediates"
+  @module("vitest") @scope("vi") external runTimersToTime: int => unit = "runTimersToTime"
+  @module("vitest") @scope("vi") external advanceTimersByTime: int => unit = "advanceTimersByTime"
+  @module("vitest") @scope("vi")
+  external runOnlyPendingTimers: unit => unit = "runOnlyPendingTimers"
+  @module("vitest") @scope("vi")
+  external useFakeTimersImplementation: fakeTimerImplementation => unit = "useFakeTimers"
   let useFakeTimers: (~implementation: fakeTimerImplementation=?, unit) => unit
-  @val external useRealTimers: unit => unit = "jest.useRealTimers"
+  @module("vitest") @scope("vi") external useRealTimers: unit => unit = "useRealTimers"
   type systemTime = [#int(int) | #date(Js.Date.t)]
   let setSystemTime: systemTime => unit
 }
 
-module JestJs: {
+module Mock: {
   @@ocaml.text(" experimental ")
 
-  @val external disableAutomock: unit => unit = "jest.disableAutomock"
-  @val external enableAutomock: unit => unit = "jest.enableAutomock"
-  @val external resetModules: unit => unit = "jest.resetModules"
-  @val
-  external inferred_fn: unit => MockJs.fn<(. 'a) => Js.undefined<'b>, 'a, Js.undefined<'b>> =
-    "jest.fn"
-  @val external fn: ('a => 'b) => MockJs.fn<'a => 'b, 'a, 'b> = "jest.fn"
-  @val external fn2: ((. 'a, 'b) => 'c) => MockJs.fn<(. 'a, 'b) => 'c, ('a, 'b), 'c> = "jest.fn"
-  @val external mock: string => unit = "jest.mock"
-  @val external mockWithFactory: (string, unit => 'a) => unit = "jest.mock"
-  @val external mockVirtual: (string, unit => 'a, {..}) => unit = "jest.mock"
-  @val external clearAllMocks: unit => unit = "jest.clearAllMocks"
-  @val external resetAllMocks: unit => unit = "jest.resetAllMocks"
-  @val external setMock: (string, {..}) => unit = "jest.setMock"
-  @val external unmock: string => unit = "jest.unmock"
-  @val external spyOn: ({..} as 'this, string) => MockJs.fn<unit, unit, 'this> = "jest.spyOn"
+  @module("vitest") external disableAutomock: unit => unit = "disableAutomock"
+  @module("vitest") external enableAutomock: unit => unit = "enableAutomock"
+  @module("vitest") external resetModules: unit => unit = "resetModules"
+  @module("vitest") @scope("vi")
+  external inferred_fn: unit => MockJs.fn<'a => Js.undefined<'b>, 'a, Js.undefined<'b>> = "fn"
+  @module("vitest") @scope("vi") external fn: ('a => 'b) => MockJs.fn<'a => 'b, 'a, 'b> = "fn"
+  @module("vitest") @scope("vi")
+  external fn2: (('a, 'b) => 'c) => MockJs.fn<('a, 'b) => 'c, ('a, 'b), 'c> = "fn"
+  @module("vitest") external mock: string => unit = "mock"
+  @module("vitest") external mockWithFactory: (string, unit => 'a) => unit = "mock"
+  @module("vitest") external mockVirtual: (string, unit => 'a, {..}) => unit = "mock"
+  @module("vitest") external clearAllMocks: unit => unit = "clearAllMocks"
+  @module("vitest") external resetAllMocks: unit => unit = "resetAllMocks"
+  @module("vitest") external setMock: (string, {..}) => unit = "setMock"
+  @module("vitest") external unmock: string => unit = "unmock"
+  @module("vitest")
+  external spyOn: ({..} as 'this, string) => MockJs.fn<unit, unit, 'this> = "spyOn"
 }

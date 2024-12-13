@@ -1,3 +1,77 @@
+# Rescript-vitest
+
+This is a fork of [@glennsl/rescript-jest](https://github.com/glennsl/rescript-jest) that aims to provide bindings for [vitest](https://github.com/vitest-dev/vitest).
+
+## Status
+
+Pre-alpha.
+
+## Motivation
+
+I am aware that there is already a [rescript-vitest](https://github.com/cometkim/rescript-vitest) repository. However, I wanted to create a library with the same bindings as `rescript-jest` to make it easier to migrate existing tests from Jest to Vitest.
+
+I also appreciate the bindings provided by `rescript-jest`, particularly because each test concludes with a single assertion, which I find more suitable for functional programming.
+
+## Changes from `rescript-jest` and how to migrate
+
+- The top-level module is named `Vitest` instead of `Jest`.
+- The module `Jest` is renamed to `Vi`.
+- The module `JestJs`, containing the mock functions, is renamed to `Mock`.
+- The following functions are deprecated:
+  - `runAllImmediates`: not supported by Vitest.
+  - `testAsync`, `beforeAllAsync`, `beforeEachAsync`, `afterAllAsync`, `afterEachAsync`: deprecated.
+
+If you have existing tests using `rescript-jest`, you can easily migrate them to `rescript-vitest` by changing the module names.
+
+If you have any async tests, you will need to change the `testAsync`, `beforeAllAsync`, `beforeEachAsync`, `afterAllAsync`, and `afterEachAsync` functions to `testPromise`, `beforeAllPromise`, `beforeEachPromise`, `afterAllPromise`, and `afterEachPromise`. If you use `runAllImmediates`, you will need to port the tests to use `runAllTimers` instead. (???)
+
+## Installation
+
+This package is tested with Rescript 11.
+
+You can install the library using npm or yarn:
+
+```sh
+npm install --save-dev @greenfinity/rescript-vitest
+```
+
+or
+
+```sh
+yarn add --dev @greenfinity/rescript-vitest
+```
+
+Then add `@greenfinity/rescript-vitest` to `bs-dev-dependencies` in your `rescript.json` (or `bsconfig.json`):
+
+```json
+{
+  ...
+  "bs-dev-dependencies": ["@greenfinity/rescript-vitest"]
+}
+```
+
+Then add `__tests__` to `sources`  in your `rescript.json` (or `bsconfig.json`):
+
+```json
+"sources": [
+  {
+    "dir": "src"
+  },
+  {
+    "dir": "__tests__",
+    "type": "dev"
+  }
+]
+```
+
+## Examples
+
+You can look at the tests in the `__tests__` directory for examples.
+
+# Original README.md
+
+The rest of this page is the unchanged README.md from the original `rescript-jest` repository.
+
 # Rescript-jest
 
 [ReScript](https://github.com/rescript-lang) bindings for [Jest](https://github.com/facebook/jest)
@@ -12,7 +86,8 @@
 
 ## Status
 
-### Rescript-jest
+### Rescript-jest (changes)
+
 - bs-jest is rebranded as rescript-jest
 - rescript-jest depends on Rescript 9.1.4, Jest 27.3.1 and @ryyppy/rescript-promise 2.1.0.
 - Starting from Jest 27.0.0 jest-jasmine was replaced by jest-circus changing the semantics for before and after hooks.  `afterAllAsync` and `afterAllPromise` hooks now time-out consistent with the behavior of `beforeAllAsync` and `beforeAllPromise` in version 0.7.0 of bs-jest.  `beforeAllAsync` and `beforeAllPromise` also now behave consistently with '`afterAllAsync` and `afterAllPromise` when included in skipped test suites.
@@ -32,6 +107,7 @@ To generate ES6 bindings for your project, update bsconfig.json
     "in-source": true
   },
 ```
+
 Then add `@babel/core`, `@babel/preset-env` and `babel-jest` packages to your project.  Also, add babel.config.js
 
 ```js
@@ -106,9 +182,9 @@ See [the tests](https://github.com/glennsl/rescript-jest/tree/master/__tests__) 
 npm install --save-dev @glennsl/rescript-jest
 ```
 
-or 
+or
 
-```
+```sh
 yarn install --save-dev @glennsl/rescript-jest
 ```
 
@@ -161,15 +237,18 @@ For the moment, please refer to [Jest.resi](https://github.com/glennsl/rescript-
 
 If you encounter the error `SyntaxError: Cannot use import statement outside a module`, it may be that you are mixing `es6` and `commonjs` modules in your project. For example, this can happen when you are building a React project since React builds are always in ES6. To fix this, please do the following:
 
-  - Make sure your `bsconfig.json` compiles `"es6"` or `"es6-global"`:
+- Make sure your `bsconfig.json` compiles `"es6"` or `"es6-global"`:
+
   ```json
     "package-specs": {
       "module": "es6",
     }
   ```
-  - Install [esbuild-jest](https://github.com/aelbore/esbuild-jest) through `yarn` or `npm` as a `devDependency`.
-  - Build your Rescript project with deps: `rescript build -with-deps`.
-  - Add this to your Jest config (or `jest` of your `package.json`):
+
+- Install [esbuild-jest](https://github.com/aelbore/esbuild-jest) through `yarn` or `npm` as a `devDependency`.
+- Build your Rescript project with deps: `rescript build -with-deps`.
+- Add this to your Jest config (or `jest` of your `package.json`):
+
   ```json
   {
     "transform": {
@@ -178,7 +257,8 @@ If you encounter the error `SyntaxError: Cannot use import statement outside a m
     "transformIgnorePatterns": ["<rootDir>/node_modules/(?!(rescript|@glennsl/rescript-jest)/)"]
   }
   ```
-  - The property `"transformIgnorePatterns"` is an array of strings. Either you do some regex or organize them in an array. **Please make sure all folders in `node_modules` involving compiled .res/.ml/.re files and the like such as `rescript` or `@glennsl/rescript-jest` are mentioned in the aforementioned array.**
+
+- The property `"transformIgnorePatterns"` is an array of strings. Either you do some regex or organize them in an array. **Please make sure all folders in `node_modules` involving compiled .res/.ml/.re files and the like such as `rescript` or `@glennsl/rescript-jest` are mentioned in the aforementioned array.**
 
 This problem is also addressed in [Issue #63](https://github.com/glennsl/rescript-jest/issues/63).
 
@@ -195,27 +275,33 @@ Then build and run tests with `npm test`, start watchers for `rescript`and `jest
 ## Changes
 
 ### 0.11
+
 - [BREAKING] Bump required rescript to 11.1.x, uncurried mode requires MockJs.fn to be applied with explcicit currying.
 - Worked around bug in rescript 11 curried mode where `@uncurry` causes an extra param which changes Jest behaviour, by replacing `@uncurry` with `(. )`.
 
 ### 0.10
+
 - [BREAKING] Bump required rescript to 10.1.x
 - Remove unnecessary dependency on `@ryyppy/rescript-promise`
 
 ### 0.9.2
+
 - Added `testAllPromise`.
 
 ### 0.9.1
+
 - Added `Jest.setSystemTime`.
 
 ### 0.9
+
 - [BREAKING] Removed the unnecessarily verbose generated namespace.
 
 ### 0.8
+
 - Moved repository from `glennsl/bs-jest` to `glennsl/rescript-jest`
 - Renamed published package to `@glennsl/rescript-jest`
 - [BREAKING] Converted source code to ReScript, hence will no longer work with versions of BuckleScript that lack ReScript support.
-- [BREAKING] As of Jest 27.0.0, Jest-Circus replaces Jest-Jasmine by default leading to change in behavior of async and Promise before and after hooks. 
+- [BREAKING] As of Jest 27.0.0, Jest-Circus replaces Jest-Jasmine by default leading to change in behavior of async and Promise before and after hooks.
 - [BREAKING] As the `|>` operator is deprecated in Recript 9.x, all APIs now use data-first (`->`) semantics.
 
 ### 0.7

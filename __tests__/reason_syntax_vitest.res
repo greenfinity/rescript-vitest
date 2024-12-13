@@ -1,4 +1,4 @@
-open Jest
+open Vitest
 
 let () = describe("Reason Syntax", () => {
   open Expect

@@ -1,15 +1,12 @@
 module Promise = Js.Promise2
 
-include Jest.Runner({
+include Vitest.Runner({
   type t<_> = bool
-  let affirm = ok => assert ok
+  let affirm = ok => assert(ok)
 })
 
 let () = {
   Only.test("Only.test", () => true)
-
-  Only.testAsync("Only.testAsync", finish => finish(true))
-  Only.testAsync("testAsync - timeout ok", ~timeout=1, finish => finish(true))
 
   Only.testPromise("Only.testPromise", () => Promise.resolve(true))
   Only.testPromise("testPromise - timeout ok", ~timeout=1, () => Promise.resolve(true))

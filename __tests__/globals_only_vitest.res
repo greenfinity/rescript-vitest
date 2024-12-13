@@ -1,12 +1,8 @@
-module Promise = Js.Promise2
-
-open Jest
+open Vitest
+module Promise = Js.Promise
 
 let () = {
   Only.test("Only.test", () => pass)
-
-  Only.testAsync("Only.testAsync", finish => finish(pass))
-  Only.testAsync("testAsync - timeout ok", ~timeout=1, finish => finish(pass))
 
   Only.testPromise("Only.testPromise", () => Promise.resolve(pass))
   Only.testPromise("testPromise - timeout ok", ~timeout=1, () => Promise.resolve(pass))

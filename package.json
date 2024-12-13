@@ -1,22 +1,23 @@
 {
-  "name": "@glennsl/rescript-jest",
-  "version": "0.11.0",
-  "description": "Rescript bindings to the Jest testing framework",
-  "author": "glennsl",
+  "name": "@greenfinity/rescript-vitest",
+  "version": "0.1.0",
+  "description": "Rescript bindings to the Vitest testing framework",
+  "author": "Balazs Ree <ree@greenfinity.hu>",
   "license": "MIT",
   "scripts": {
-    "build": "rescript build -with-deps",
-    "clean": "rescript clean",
-    "start": "rescript build -w",
-    "test": "npm run build && jest",
-    "test-ci": "npm run build && jest --coverage --coverageDirectory='coverage'",
-    "watch:rescript": "rescript build -with-deps -w",
-    "watch:jest": "jest --coverage --watchAll",
-    "watch:screen": "screen -c .screenrc"
+    "changelog": "yarn auto-changelog -p && git add HISTORY.md",
+    "build": "yarn rescript:build",
+    "rescript:clean": "yarn rescript clean",
+    "rescript:build": "yarn rescript build -with-deps",
+    "rescript:dev": "yarn rescript build -with-deps -w",
+    "test": "yarn vitest --run --coverage --allow-only",
+    "test:dev": "yarn vitest",
+    "yalc:dev": "yarn rescript:dev & yarn nodemon -x \"yalc push\"",
+    "yalc:push": "yarn nodemon -e res -x \"yalc push\""
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/glennsl/rescript-jest.git"
+    "url": "git+https://github.com/greenfinity/rescript-vitest.git"
   },
   "keywords": [
     "Rescript",
@@ -24,20 +25,21 @@
     "test"
   ],
   "bugs": {
-    "url": "https://github.com/glennsl/rescript-jest/issues"
+    "url": "https://github.com/greenfinity/rescript-vitest/issues"
   },
-  "homepage": "https://github.com/glennsl/rescript-jest#readme",
+  "homepage": "https://github.com/greenfinity/rescript-vitest#readme",
   "files": [
-    "src/",
-    "bsconfig.json"
+    "src",
+    "rescript.json"
   ],
   "devDependencies": {
-    "@babel/core": "^7.15.8",
-    "@babel/preset-env": "^7.15.8",
-    "babel-jest": "^27.3.1",
+    "auto-changelog": "^2.5.0",
+    "nodemon": "^3.1.7",
     "rescript": "^11.1.0"
   },
   "dependencies": {
-    "jest": "^27.3.1"
+    "@vitest/coverage-v8": "^2.1.8",
+    "jsdom": "^25.0.1",
+    "vitest": "^2.1.8"
   }
 }
