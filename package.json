@@ -1,6 +1,6 @@
 {
   "name": "@greenfinity/rescript-vitest",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Rescript bindings to the Vitest testing framework",
   "author": "Balazs Ree <ree@greenfinity.hu>",
   "license": "MIT",
@@ -30,6 +30,7 @@
   "homepage": "https://github.com/greenfinity/rescript-vitest#readme",
   "files": [
     "src",
+    "lib",
     "rescript.json"
   ],
   "devDependencies": {
