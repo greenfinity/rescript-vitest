@@ -30,7 +30,7 @@
   "homepage": "https://github.com/greenfinity/rescript-vitest#readme",
   "files": [
     "src",
-    "lib",
+    "lib/bs",
     "rescript.json"
   ],
   "devDependencies": {
