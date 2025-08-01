@@ -1,6 +1,6 @@
 open Vitest
 open Expect
-open! Expect.Operators
+// open! Expect.Operators
 module Promise = Js.Promise
 
 @val external setTimeout: (unit => unit, int) => unit = "setTimeout"
@@ -15,7 +15,7 @@ let () = describe("Fake Timers", () => {
     let before = flag.contents
     Vi.runAllTimers()
 
-    expect((before, flag.contents)) == (false, true)
+    expect((before, flag.contents))->toEqual((false, true))
   })
 
   testPromise("runAllTicks", async () => {
@@ -27,7 +27,7 @@ let () = describe("Fake Timers", () => {
 
     await Promise.make(
       (~resolve, ~reject as _) =>
-        nextTick(() => resolve(expect((before, flag.contents)) == (false, true))),
+        nextTick(() => resolve(expect((before, flag.contents))->toEqual((false, true)))),
     )
   })
 
@@ -50,7 +50,7 @@ let () = describe("Fake Timers", () => {
     let inbetween = flag.contents
     Vi.advanceTimersByTime(1000)
 
-    expect((before, inbetween, flag.contents)) == (false, false, true)
+    expect((before, inbetween, flag.contents))->toEqual((false, false, true))
   })
 
   test("advanceTimersByTime", () => {
@@ -62,7 +62,7 @@ let () = describe("Fake Timers", () => {
     let inbetween = flag.contents
     Vi.advanceTimersByTime(1000)
 
-    expect((before, inbetween, flag.contents)) == (false, false, true)
+    expect((before, inbetween, flag.contents))->toEqual((false, false, true))
   })
 
   test("runOnlyPendingTimers", () => {
@@ -78,7 +78,7 @@ let () = describe("Fake Timers", () => {
     let inBetween = count.contents
     Vi.runOnlyPendingTimers()
 
-    expect((before, inBetween, count.contents)) == (1, 2, 3)
+    expect((before, inBetween, count.contents))->toEqual((1, 2, 3))
   })
 
   test("clearAllTimers", () => {
@@ -89,7 +89,7 @@ let () = describe("Fake Timers", () => {
     Vi.clearAllTimers()
     Vi.runAllTimers()
 
-    expect((before, flag.contents)) == (false, false)
+    expect((before, flag.contents))->toEqual((false, false))
   })
 
   testPromise("clearAllTimers", async () => {

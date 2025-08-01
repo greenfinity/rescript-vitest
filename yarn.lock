@@ -226,8 +226,10 @@ __metadata:
     auto-changelog: "npm:^2.5.0"
     jsdom: "npm:^25.0.1"
     nodemon: "npm:^3.1.7"
-    rescript: "npm:^11.1.0"
+    rescript: "npm:^12.0.0-beta.4"
     vitest: "npm:^2.1.8"
+  peerDependencies:
+    rescript: ^12.0.0-beta.4
   languageName: unknown
   linkType: soft
 
@@ -329,6 +331,41 @@ __metadata:
   version: 0.11.0
   resolution: "@pkgjs/parseargs@npm:0.11.0"
   checksum: 10/115e8ceeec6bc69dff2048b35c0ab4f8bbee12d8bb6c1f4af758604586d802b6e669dcb02dda61d078de42c2b4ddce41b3d9e726d7daa6b4b850f4adbf7333ff
+  languageName: node
+  linkType: hard
+
+"@rescript/darwin-arm64@npm:12.0.0-beta.4":
+  version: 12.0.0-beta.4
+  resolution: "@rescript/darwin-arm64@npm:12.0.0-beta.4"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@rescript/darwin-x64@npm:12.0.0-beta.4":
+  version: 12.0.0-beta.4
+  resolution: "@rescript/darwin-x64@npm:12.0.0-beta.4"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@rescript/linux-arm64@npm:12.0.0-beta.4":
+  version: 12.0.0-beta.4
+  resolution: "@rescript/linux-arm64@npm:12.0.0-beta.4"
+  conditions: os=linux & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@rescript/linux-x64@npm:12.0.0-beta.4":
+  version: 12.0.0-beta.4
+  resolution: "@rescript/linux-x64@npm:12.0.0-beta.4"
+  conditions: os=linux & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@rescript/win32-x64@npm:12.0.0-beta.4":
+  version: 12.0.0-beta.4
+  resolution: "@rescript/win32-x64@npm:12.0.0-beta.4"
+  conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
@@ -1836,14 +1873,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rescript@npm:^11.1.0":
-  version: 11.1.4
-  resolution: "rescript@npm:11.1.4"
+"rescript@npm:^12.0.0-beta.4":
+  version: 12.0.0-beta.4
+  resolution: "rescript@npm:12.0.0-beta.4"
+  dependencies:
+    "@rescript/darwin-arm64": "npm:12.0.0-beta.4"
+    "@rescript/darwin-x64": "npm:12.0.0-beta.4"
+    "@rescript/linux-arm64": "npm:12.0.0-beta.4"
+    "@rescript/linux-x64": "npm:12.0.0-beta.4"
+    "@rescript/win32-x64": "npm:12.0.0-beta.4"
+  dependenciesMeta:
+    "@rescript/darwin-arm64":
+      optional: true
+    "@rescript/darwin-x64":
+      optional: true
+    "@rescript/linux-arm64":
+      optional: true
+    "@rescript/linux-x64":
+      optional: true
+    "@rescript/win32-x64":
+      optional: true
   bin:
-    bsc: bsc
-    bstracing: lib/bstracing
-    rescript: rescript
-  checksum: 10/2ba71cf76e04000afb025afc245aef0d4c1647c73323f325bbc386f562df5a9fdddf137f6031ac7bb59c935c60174156d7a605a05a70adac8bd76dc0795aa6bd
+    bsc: cli/bsc.js
+    bstracing: cli/bstracing.js
+    rescript: cli/rescript.js
+    rescript-legacy: cli/rescript-legacy.js
+    rescript-tools: cli/rescript-tools.js
+  checksum: 10/2dbb8cbd28e774e5039d4bc2bb91b523c1fdf4ab5fedafcb8fa1ee3367044fba422ea67707265c01dc6782b86d2a14c63c34a5c5c2eb43bffb5f9f73505955a1
   languageName: node
   linkType: hard
 

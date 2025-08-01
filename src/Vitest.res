@@ -160,22 +160,24 @@ module Runner = (A: Asserter) => {
       Js.Undefined.fromOption(timeout),
     )
 
-  let testAll = (name, inputs, callback) => List.iter(input => {
+  let testAll = (name, inputs, callback) =>
+    List.forEach(inputs, input => {
       let name = `${name} - ${input->Js.String.make}`
       _test(name, () => {
         affirm(callback(input))
         Js.undefined
       })
-    }, inputs)
+    })
 
-  let testAllPromise = (name: string, inputs, ~timeout=?, callback) => List.iter(input => {
+  let testAllPromise = (name: string, inputs, ~timeout=?, callback) =>
+    List.forEach(inputs, input => {
       let name = `${name} - ${input->Js.String.make}`
       _testPromise(
         name,
         () => then(callback(input), a => a->A.affirm->Promise.resolve),
         Js.Undefined.fromOption(timeout),
       )
-    }, inputs)
+    })
 
   @module("vitest")
   external describe: (string, @uncurry unit => Js.undefined<unit>) => unit = "describe"
@@ -233,22 +235,24 @@ module Runner = (A: Asserter) => {
         Js.Undefined.fromOption(timeout),
       )
 
-    let testAll = (name, inputs, callback) => List.iter(input => {
+    let testAll = (name, inputs, callback) =>
+      List.forEach(inputs, input => {
         let name = `${name} - ${input->Js.String.make}`
         _test(name, () => {
           affirm(callback(input))
           Js.undefined
         })
-      }, inputs)
+      })
 
-    let testAllPromise = (name, inputs, ~timeout=?, callback) => List.iter(input => {
+    let testAllPromise = (name, inputs, ~timeout=?, callback) =>
+      List.forEach(inputs, input => {
         let name = `${name} - ${input->Js.String.make}`
         _testPromise(
           name,
           () => then(callback(input), a => a->A.affirm->Promise.resolve),
           Js.Undefined.fromOption(timeout),
         )
-      }, inputs)
+      })
 
     @module("vitest") @scope("describe")
     external describe: (string, @uncurry unit => Js.undefined<unit>) => unit = "only"
@@ -265,14 +269,16 @@ module Runner = (A: Asserter) => {
     @module("vitest") @scope("it") @module("vitest") @scope("it")
     external testPromise: (string, @uncurry unit => promise<A.t<'a>>) => unit = "skip"
     let testPromise = (name, ~timeout as _=?, callback) => testPromise(name, callback)
-    let testAll = (name, inputs, callback) => List.iter(input => {
+    let testAll = (name, inputs, callback) =>
+      List.forEach(inputs, input => {
         let name = `${name} - ${input->Js.String.make}`
         test(name, () => callback(input))
-      }, inputs)
-    let testAllPromise = (name, inputs, ~timeout as _=?, callback) => List.iter(input => {
+      })
+    let testAllPromise = (name, inputs, ~timeout as _=?, callback) =>
+      List.forEach(inputs, input => {
         let name = `${name} - ${input->Js.String.make}`
         testPromise(name, () => callback(input))
-      }, inputs)
+      })
     @module("vitest") @scope("describe")
     external describe: (string, @uncurry unit => Js.undefined<unit>) => unit = "skip"
     let describe = (label, f) =>
@@ -337,18 +343,18 @@ module Expect = {
   let not_ = (#Just(a)) => #Not(a)
   let not__ = not_ /* For Reason syntax compatibility. TODO: deprecate and remove */
 
-  module Operators = {
-    @@ocaml.text(" experimental ")
+  // module Operators = {
+  //   @@ocaml.text(" experimental ")
 
-    let \"==" = (a, b) => toBe(a, b)
-    let \">" = (a, b) => toBeGreaterThan(a, b)
-    let \">=" = (a, b) => toBeGreaterThanOrEqual(a, b)
-    let \"<" = (a, b) => toBeLessThan(a, b)
-    let \"<=" = (a, b) => toBeLessThanOrEqual(a, b)
-    let \"=" = (a, b) => toEqual(a, b)
-    let \"<>" = (a, b) => a->not_->toEqual(b)
-    let \"!=" = (a, b) => a->not_->toBe(b)
-  }
+  //   let \"==" = (a, b) => toBe(a, b)
+  //   let \">" = (a, b) => toBeGreaterThan(a, b)
+  //   let \">=" = (a, b) => toBeGreaterThanOrEqual(a, b)
+  //   let \"<" = (a, b) => toBeLessThan(a, b)
+  //   let \"<=" = (a, b) => toBeLessThanOrEqual(a, b)
+  //   let \"=" = (a, b) => toEqual(a, b)
+  //   let \"<>" = (a, b) => a->not_->toEqual(b)
+  //   let \"!=" = (a, b) => a->not_->toBe(b)
+  // }
 }
 
 module ExpectJs = {
@@ -389,19 +395,19 @@ module MockJs = {
   external fn: fn<'fn, _, _> => 'fn = "%identity"
   @get @scope("mock") external calls: fn<_, 'args, _> => array<'args> = "calls"
   let calls = self =>
-    Js.Array.copy(calls(self)) /* Awesome, the bloody things are mutated so we need to copy */
+    Array.copy(calls(self)) /* Awesome, the bloody things are mutated so we need to copy */
   let calls = self =>
     Array.map(
+      calls(self),
       %raw(`
     function (args) { return args.length === 1 ? args[0] : args }
   `),
-      calls(self),
     ) /* there's no such thing as aa 1-ary tuple, so we need to unbox single-element arrays */
   @get @scope("mock")
   external instances: fn<_, _, 'ret> => array<'ret> =
     "instances" /* TODO: semms this only records "instances" created by `new` */
   let instances = self =>
-    Js.Array.copy(instances(self)) /* Awesome, the bloody things are mutated so we need to copy */
+    Array.copy(instances(self)) /* Awesome, the bloody things are mutated so we need to copy */
 
   @ocaml.doc(" Beware: this actually replaces `mock`, not just `mock.instances` and `mock.calls` ")
   @send

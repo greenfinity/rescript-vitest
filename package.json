@@ -8,8 +8,9 @@
     "changelog": "yarn auto-changelog -p && git add HISTORY.md",
     "build": "yarn rescript:build",
     "rescript:clean": "yarn rescript clean",
-    "rescript:build": "yarn rescript build -with-deps",
-    "rescript:dev": "yarn rescript build -with-deps -w",
+    "rescript:build": "yarn rescript build",
+    "rescript:build:dev": "yarn rescript build --dev",
+    "rescript:dev": "yarn rescript watch --dev",
     "test": "yarn vitest --run --coverage --allow-only",
     "test:dev": "yarn vitest",
     "yalc:dev": "yarn rescript:dev & yarn nodemon -x \"yalc push\"",
@@ -31,12 +32,16 @@
   "files": [
     "src",
     "lib/bs",
-    "rescript.json"
+    "rescript.json",
+    "__tests__/.gitkeep"
   ],
+  "peerDependencies": {
+    "rescript": "^12.0.0-beta.4"
+  },
   "devDependencies": {
     "auto-changelog": "^2.5.0",
     "nodemon": "^3.1.7",
-    "rescript": "^11.1.0"
+    "rescript": "^12.0.0-beta.4"
   },
   "dependencies": {
     "@vitest/coverage-v8": "^2.1.8",
