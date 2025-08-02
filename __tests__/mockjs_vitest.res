@@ -104,7 +104,7 @@ let _ = {
       let fn = MockJs.fn(mockFn)
 
       let before = call(fn, 10)
-      mockFn->MockJs.mockImplementation(a => Js.Undefined.return(string_of_int(a)))->ignore
+      mockFn->MockJs.mockImplementation(a => Js.Undefined.return(Int.toString(a)))->ignore
 
       expect((before, call(fn, 18), call(fn, 24)))->toEqual((
         Js.Undefined.empty,
@@ -118,9 +118,9 @@ let _ = {
       let fn = MockJs.fn(mockFn)
 
       let before = call(fn, 10)
-      mockFn->MockJs.mockImplementationOnce(a => Js.Undefined.return(string_of_int(a)))->ignore
+      mockFn->MockJs.mockImplementationOnce(a => Js.Undefined.return(Int.toString(a)))->ignore
       mockFn
-      ->MockJs.mockImplementationOnce(a => Js.Undefined.return(string_of_int(a * 2)))
+      ->MockJs.mockImplementationOnce(a => Js.Undefined.return(Int.toString(a * 2)))
       ->ignore
 
       expect((before, call(fn, 18), call(fn, 24), call(fn, 12)))->toEqual((
@@ -178,7 +178,7 @@ let _ = {
 
     /*
   Skip.test "bindThis" (fun _ ->
-    let fn = ((fun a -> string_of_int a) [@bs]) in
+    let fn = ((fun a -> Int.toString a) [@bs]) in
     let boundFn = bindThis fn "this" in
 
     expect (call boundFn () 2) -> toEqual "2"
@@ -205,14 +205,14 @@ let _ = {
 
   describe("fn", _ => {
     test("calls implementation", _ => {
-      let mockFn = Mock.fn(a => string_of_int(a))
+      let mockFn = Mock.fn(a => Int.toString(a))
       let fn = MockJs.fn(mockFn)
 
       expect(fn(18))->toBe("18")
     })
 
     test("calls - records call arguments", _ => {
-      let mockFn = Mock.fn(a => string_of_int(a))
+      let mockFn = Mock.fn(a => Int.toString(a))
 
       let _ = MockJs.fn(mockFn)(74)
       let _ = MockJs.fn(mockFn)(89435)
@@ -222,7 +222,7 @@ let _ = {
     })
 
     test("mockClear - resets calls", _ => {
-      let mockFn = Mock.fn(a => string_of_int(a))
+      let mockFn = Mock.fn(a => Int.toString(a))
 
       let before = mockFn->MockJs.calls
       let _ = (MockJs.fn(mockFn)(1), MockJs.fn(mockFn)(2))
@@ -234,7 +234,7 @@ let _ = {
     })
 
     test("mockReset - resets calls", _ => {
-      let mockFn = Mock.fn(a => string_of_int(a))
+      let mockFn = Mock.fn(a => Int.toString(a))
       let fn = MockJs.fn(mockFn)
 
       let before = mockFn->MockJs.calls
@@ -250,7 +250,7 @@ let _ = {
     Skip.test(
       "mockReset - resets implementations - skipped for now as this removes the original implementation too causing an undefnied to be returned",
       _ => {
-        let mockFn = Mock.fn(a => string_of_int(a))
+        let mockFn = Mock.fn(a => Int.toString(a))
         mockFn->MockJs.mockReturnValue("128")->ignore
         let fn = MockJs.fn(mockFn)
 
@@ -263,29 +263,29 @@ let _ = {
     )
 
     test("mockImplementation - sets implementation to use for subsequent invocations", _ => {
-      let mockFn = Mock.fn(a => string_of_int(a))
+      let mockFn = Mock.fn(a => Int.toString(a))
       let fn = MockJs.fn(mockFn)
 
       let before = fn(10)
-      mockFn->MockJs.mockImplementation(a => string_of_int(a * 2))->ignore
+      mockFn->MockJs.mockImplementation(a => Int.toString(a * 2))->ignore
 
       expect((before, fn(18), fn(24)))->toEqual(("10", "36", "48"))
     })
 
     test("mockImplementationOnce - queues implementation for one subsequent invocation", _ => {
-      let mockFn = Mock.fn(a => string_of_int(a))
+      let mockFn = Mock.fn(a => Int.toString(a))
       let fn = MockJs.fn(mockFn)
 
       let before = fn(10)
-      mockFn->MockJs.mockImplementationOnce(a => string_of_int(a * 3))->ignore
-      mockFn->MockJs.mockImplementationOnce(a => string_of_int(a * 2))->ignore
+      mockFn->MockJs.mockImplementationOnce(a => Int.toString(a * 3))->ignore
+      mockFn->MockJs.mockImplementationOnce(a => Int.toString(a * 2))->ignore
 
       expect((before, fn(18), fn(24), fn(12)))->toEqual(("10", "54", "48", "12"))
     })
 
     /* mockReturnThis doesn't make sense for native functions
   test "mockReturnThis - returns `this` on subsequent invocations" (fun _ ->
-    let mockFn = Mock.fn (fun a -> string_of_int a) in
+    let mockFn = Mock.fn (fun a -> Int.toString a) in
     let this = "this" in
     let fn = bindThis (mockFn -> MockJs.fn) this in
 
@@ -300,7 +300,7 @@ let _ = {
  */
 
     test("mockReturnValue - returns given value on subsequent invocations", _ => {
-      let mockFn = Mock.fn(a => string_of_int(a))
+      let mockFn = Mock.fn(a => Int.toString(a))
       let fn = MockJs.fn(mockFn)
 
       let before = fn(10)
@@ -310,7 +310,7 @@ let _ = {
     })
 
     test("mockReturnValueOnce - queues implementation for one subsequent invocation", _ => {
-      let mockFn = Mock.fn(a => string_of_int(a))
+      let mockFn = Mock.fn(a => Int.toString(a))
       let fn = MockJs.fn(mockFn)
 
       let before = fn(10)
@@ -323,7 +323,7 @@ let _ = {
 
   describe("fn2", _ =>
     test("calls implementation", _ => {
-      let mockFn = Mock.fn2((a, b) => string_of_int(a + b))
+      let mockFn = Mock.fn2((a, b) => Int.toString(a + b))
       let fn = MockJs.fn(mockFn)
 
       expect(call2(fn, 18, 24))->toBe("42")
@@ -332,7 +332,7 @@ let _ = {
 
   /*
   test "calls - records call arguments" (fun _ ->
-    let mockFn = Mock.fn2 ((fun a b -> string_of_int (a + b)) [@bs]) in
+    let mockFn = Mock.fn2 ((fun a b -> Int.toString (a + b)) [@bs]) in
 
     let _ = MockJs.fn mockFn 18 24 in
     let calls  = mockFn -> MockJs.calls in

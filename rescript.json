@@ -1,7 +1,7 @@
 {
   "name": "@greenfinity/rescript-vitest",
   "namespace": false,
-  "bsc-flags": ["-bs-no-version-header", "-bs-super-errors"],
+  "compiler-flags": ["-bs-no-version-header"],
   "suffix": ".bs.mjs",
   "package-specs": {
     "module": "esmodule",
@@ -19,6 +19,5 @@
   "warnings": {
     "number": "-44",
     "error": "+101"
-  },
-  "bs-dependencies": []
+  }
 }

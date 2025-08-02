@@ -5,7 +5,8 @@ const projectRootPath = path.resolve(".");
 
 export default defineConfig({
   test: {
-    include: ["**/__tests__/**/*_vitest.bs.mjs"],
+    include: ["**/*_vitest.bs.mjs"],
+    exclude: ["**/lib/bs/**/*"],
     globals: true,
     reporters: "verbose",
     environment: "jsdom",
