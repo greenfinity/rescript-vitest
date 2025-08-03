@@ -54,19 +54,32 @@ let () = {
     test("expectFn", () => expectFn(throw, Invalid_argument("foo"))->toThrow)
   })
 
-  // describe("Expect.Operators", () => {
-  //   open Expect
-  //   open! Expect.Operators
+  describe("Expect.Operators", () => {
+    open Expect
+    open! Expect.Operators
 
-  //   test("==", () => expect(1 + 2) === 3)
-  //   test(">", () => expect(4) > 3)
-  //   test(">=", () => expect(4) >= 4)
-  //   test("<", () => expect(4) < 5)
-  //   test("<=", () => expect(4) <= 4)
-  //   test("=", () => expect(1 + 2) == 3)
-  //   test("<>", () => expect(1 + 2) != 4)
-  //   test("!=", () => expect(1 + 2) !== 4)
-  // })
+    let r1 = {"foo": "bar"}
+
+    "==="->describe(() => {
+      test("int", () => expect(1 + 2) === 3)
+      test("string", () => expect("foo") === "foo")
+      test("same record", () => expect(r1) === r1)
+    })
+    "!=="->describe(() => {
+      test("int", () => expect(1 + 2) !== 4)
+      test("equal record", () => expect(r1) !== {"foo": "bar"})
+    })
+    "=="->describe(() => {
+      test("int", () => expect(1 + 2) == 3)
+      test("string", () => expect("foo") == "foo")
+      test("record", () => expect(r1) == {"foo": "bar"})
+    })
+    test(">", () => expect(4) > 3)
+    test(">=", () => expect(4) >= 4)
+    test("<", () => expect(4) < 5)
+    test("<=", () => expect(4) <= 4)
+    test("!=", () => expect(1 + 2) != 4)
+  })
 
   describe("ExpectJs", () => {
     open ExpectJs
