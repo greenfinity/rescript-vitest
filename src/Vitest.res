@@ -1,4 +1,4 @@
-@send external then: (promise<'a>, @uncurry 'a => promise<'b>) => promise<'b> = "then"
+@send external then: (promise<'a>, @uncurry ('a => promise<'b>)) => promise<'b> = "then"
 module Promise = Js.Promise
 
 type modifier<'a> = [
@@ -15,7 +15,6 @@ let mapMod = (f, x) =>
 type rec assertion =
   | Ok: assertion
   | Fail(string): assertion
-
   | ArrayContains(modifier<(array<'a>, 'a)>): assertion
   | ArrayContainsEqual(modifier<(array<'a>, 'a)>): assertion
   | ArrayLength(modifier<(array<'a>, int)>): assertion
@@ -30,14 +29,11 @@ type rec assertion =
   | LessThanOrEqual(modifier<('a, 'a)>): assertion
   | StringContains(modifier<(string, string)>): assertion
   | StringMatch(modifier<(string, Js.Re.t)>): assertion
-
   | Throws(modifier<unit => _>): assertion
-
   | MatchInlineSnapshot(_, string): assertion
   | MatchSnapshot(_): assertion
   | MatchSnapshotName(_, string): assertion
   | ThrowsMatchSnapshot(unit => _): assertion
-
   /* JS */
   | Defined(modifier<Js.undefined<'a>>): assertion
   | Falsy(modifier<'a>): assertion
@@ -343,18 +339,17 @@ module Expect = {
   let not_ = (#Just(a)) => #Not(a)
   let not__ = not_ /* For Reason syntax compatibility. TODO: deprecate and remove */
 
-  // module Operators = {
-  //   @@ocaml.text(" experimental ")
-
-  //   let \"==" = (a, b) => toBe(a, b)
-  //   let \">" = (a, b) => toBeGreaterThan(a, b)
-  //   let \">=" = (a, b) => toBeGreaterThanOrEqual(a, b)
-  //   let \"<" = (a, b) => toBeLessThan(a, b)
-  //   let \"<=" = (a, b) => toBeLessThanOrEqual(a, b)
-  //   let \"=" = (a, b) => toEqual(a, b)
-  //   let \"<>" = (a, b) => a->not_->toEqual(b)
-  //   let \"!=" = (a, b) => a->not_->toBe(b)
-  // }
+  module Operators = {
+    let \"===" = (a, b) => a->toBe(b)
+    let \">" = (a, b) => toBeGreaterThan(a, b)
+    let \">=" = (a, b) => toBeGreaterThanOrEqual(a, b)
+    let \"<" = (a, b) => toBeLessThan(a, b)
+    let \"<=" = (a, b) => toBeLessThanOrEqual(a, b)
+    let \"==" = (a, b) => toEqual(a, b)
+    let \"<>" = (a, b) => a->not_->toEqual(b)
+    let \"!=" = (a, b) => a->not_->toEqual(b)
+    let \"!==" = (a, b) => a->not_->toBe(b)
+  }
 }
 
 module ExpectJs = {

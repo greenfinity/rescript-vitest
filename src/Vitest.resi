@@ -122,18 +122,19 @@ module Expect: {
   let not_: plainPartial<'a> => invertedPartial<'a>
   let not__: plainPartial<'a> => invertedPartial<'a>
 
-//   module Operators: {
-//     @@ocaml.text(" experimental ")
+  module Operators: {
+    @@ocaml.text(" experimental ")
 
-//     let \"==": ([< partial<'a>], 'a) => assertion
-//     let \">": ([< partial<'a>], 'a) => assertion
-//     let \">=": ([< partial<'a>], 'a) => assertion
-//     let \"<": ([< partial<'a>], 'a) => assertion
-//     let \"<=": ([< partial<'a>], 'a) => assertion
-//     let \"=": ([< partial<'a>], 'a) => assertion
-//     let \"<>": (plainPartial<'a>, 'a) => assertion
-//     let \"!=": (plainPartial<'a>, 'a) => assertion
-//   }
+    let \"===": ([< partial<'a>], 'a) => assertion
+    let \">": ([< partial<'a>], 'a) => assertion
+    let \">=": ([< partial<'a>], 'a) => assertion
+    let \"<": ([< partial<'a>], 'a) => assertion
+    let \"<=": ([< partial<'a>], 'a) => assertion
+    let \"==": ([< partial<'a>], 'a) => assertion
+    let \"<>": (plainPartial<'a>, 'a) => assertion
+    let \"!=": (plainPartial<'a>, 'a) => assertion
+    let \"!==": (plainPartial<'a>, 'a) => assertion
+  }
 }
 
 module ExpectJs: {
