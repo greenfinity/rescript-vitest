@@ -99,3 +99,19 @@ let () = describe("Fake Timers", () => {
     await Promise.make((~resolve, ~reject as _) => nextTick(() => resolve(pass)))
   })
 })
+
+describe("affirm", () => {
+  test("affirm pass", () => {
+    expect(1)->toEqual(1)->affirm
+    pass
+  })
+
+  test("affirm fail", () =>
+    try {
+      expect(1)->toEqual(2)->affirm
+      fail("should have thrown")
+    } catch {
+    | _ => pass
+    }
+  )
+})

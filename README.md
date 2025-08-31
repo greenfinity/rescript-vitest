@@ -25,9 +25,30 @@ If you have existing tests using `rescript-jest`, you can easily migrate them to
 
 If you have any async tests, you will need to change the `testAsync`, `beforeAllAsync`, `beforeEachAsync`, `afterAllAsync`, and `afterEachAsync` functions to `testPromise`, `beforeAllPromise`, `beforeEachPromise`, `afterAllPromise`, and `afterEachPromise`. If you use `runAllImmediates`, you will need to port the tests to use `runAllTimers` instead. (???)
 
+## New features
+
+Some new features have been added that are not present in `rescript-jest`.
+
+- `affirm` function to allow multiple assertions in a single test
+
+### `affirm` example
+
+`affirm` used to be an internal function, but now is made public to allow multiple assertions in a single test. In some cases this is appropriate, when having two sequential tests that depend on each other. Such tests are often needed in end-to-end tests with Cypress, Playwright, or Puppeteer. Note that this could actually be split up to two separate tests, but it would require the usage of mutable variables (refs), and would result in tests depending on each other, which is against the testing philosophy, where tests should be independent of each other.
+
+```rescript
+test("multiple assertions", () => {
+  let a = 1
+  expect(a)->toEqual(1)->affirm
+  let a = a + 1
+  expect(a)->toEqual(2)->affirm
+  expect("This is the final, fine expectation")->toBe("This is the final, fine expectation")
+})
+
+```
+
 ## Installation
 
-This package is tested with Rescript 11.
+This package is tested with Rescript 11 and 12.
 
 You can install the library using npm or yarn:
 

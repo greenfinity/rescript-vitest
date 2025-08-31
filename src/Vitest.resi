@@ -47,6 +47,8 @@ module Runner: (A: Asserter) =>
   }
 }
 
+let affirm: assertion => unit
+
 let test: (string, unit => assertion) => unit
 // let testAsync: (string, ~timeout: int=?, (assertion => unit) => unit) => unit
 let testPromise: (string, ~timeout: int=?, unit => promise<assertion>) => unit
