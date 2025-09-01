@@ -30,6 +30,7 @@ If you have any async tests, you will need to change the `testAsync`, `beforeAll
 Some new features have been added that are not present in `rescript-jest`.
 
 - `affirm` function to allow multiple assertions in a single test
+- `describePromise` function to allow async setup in describe blocks
 
 ### `affirm` example
 
@@ -44,6 +45,47 @@ test("multiple assertions", () => {
   expect("This is the final, fine expectation")->toBe("This is the final, fine expectation")
 })
 
+```
+
+### `describePromise` example
+
+`describePromise` is supported by vitest, so we add it here.
+
+`describePromise` enables asynchronous setup directly inside `describe` blocks.  
+This is useful when you need to prepare something before tests run—for example,  
+fetching data from a server or reading files.  
+
+Functionally, it works the same as using a `beforeAllPromise` block, but putting  
+the setup inside the `describe` is often more convenient since you don’t need to  
+use mutable variables (refs) to share data between the setup and the tests.  
+
+**Note:** `describe` blocks always execute before any setup handlers.
+
+```rescript
+describePromise("async setup", async () => {
+  let data = await fetchData()
+  "some test"->test(() => expect(data)->toEqual(expectedData))
+})
+```
+
+Similarly to `testPromise`, `describePromise` can take an optional `timeout` argument.
+
+```rescript
+describePromise("async setup with timeout", ~timeout=5000, async () => {
+  let data = await fetchData()
+  "some test"->test(() => expect(data)->toEqual(expectedData))
+})
+```
+
+## Installation
+
+This package is tested with Rescript 11 and 12.
+
+```rescript
+describePromise("async setup with timeout", ~timeout=5000, async () => {
+  let data = await fetchData()
+  expect(data)->toEqual(expectedData)
+})
 ```
 
 ## Installation

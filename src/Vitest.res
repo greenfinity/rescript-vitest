@@ -183,6 +183,18 @@ module Runner = (A: Asserter) => {
       Js.undefined
     })
 
+  @module("vitest")
+  external describePromise: (
+    string,
+    ~timeout: int=?,
+    @uncurry unit => promise<Js.undefined<unit>>,
+  ) => unit = "describe"
+  let describePromise = (label, ~timeout=?, f) =>
+    describePromise(label, ~timeout?, async () => {
+      await f()
+      Js.undefined
+    })
+
   @module("vitest") external beforeAll: (unit => unit) => unit = "beforeAll"
   @module("vitest")
   external beforeAllPromise: (@uncurry unit => promise<'a>, Js.Undefined.t<int>) => unit =
@@ -257,6 +269,18 @@ module Runner = (A: Asserter) => {
         f()
         Js.undefined
       })
+
+    @module("vitest") @scope("describe")
+    external describePromise: (
+      string,
+      ~timeout: int=?,
+      @uncurry unit => promise<Js.undefined<unit>>,
+    ) => unit = "only"
+    let describePromise = (label, ~timeout=?, f) =>
+      describePromise(label, ~timeout?, async () => {
+        await f()
+        Js.undefined
+      })
   }
 
   module Skip = {
@@ -280,6 +304,18 @@ module Runner = (A: Asserter) => {
     let describe = (label, f) =>
       describe(label, () => {
         f()
+        Js.undefined
+      })
+
+    @module("vitest") @scope("describe")
+    external describePromise: (
+      string,
+      ~timeout: int=?,
+      @uncurry unit => promise<Js.undefined<unit>>,
+    ) => unit = "skip"
+    let describePromise = (label, ~timeout=?, f) =>
+      describePromise(label, ~timeout?, async () => {
+        await f()
         Js.undefined
       })
   }

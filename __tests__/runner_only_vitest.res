@@ -27,4 +27,6 @@ let () = {
   )
 
   Only.describe("Only.describe", () => test("some aspect", () => 1 + 2 === 3))
+
+  Only.describePromise("Only.describePromise", async () => test("some aspect", () => 1 + 2 === 3))
 }
