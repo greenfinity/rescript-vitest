@@ -61,6 +61,8 @@ let () = {
 
   describe("describe", () => test("some aspect", () => pass))
 
+  describePromise("describePromise", async () => test("some aspect", () => pass))
+
   describe("beforeAll", () => {
     let x = ref(0)
 

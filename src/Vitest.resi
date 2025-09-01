@@ -14,6 +14,7 @@ module Runner: (A: Asserter) =>
   let testAllPromise: (string, list<'a>, ~timeout: int=?, 'a => promise<A.t<_>>) => unit
 
   let describe: (string, unit => unit) => unit
+  let describePromise: (string, ~timeout: int=?, unit => promise<unit>) => unit
 
   @module("vitest") external beforeAll: (unit => unit) => unit = "beforeAll"
   // let beforeAllAsync: (~timeout: int=?, (unit => unit) => unit) => unit
@@ -35,6 +36,7 @@ module Runner: (A: Asserter) =>
     let testAll: (string, list<'a>, 'a => A.t<_>) => unit
     let testAllPromise: (string, list<'a>, ~timeout: int=?, 'a => promise<A.t<_>>) => unit
     let describe: (string, unit => unit) => unit
+    let describePromise: (string, ~timeout: int=?, unit => promise<unit>) => unit
   }
 
   module Skip: {
@@ -44,6 +46,7 @@ module Runner: (A: Asserter) =>
     let testAll: (string, list<'a>, 'a => A.t<_>) => unit
     let testAllPromise: (string, list<'a>, ~timeout: int=?, 'a => promise<A.t<_>>) => unit
     let describe: (string, unit => unit) => unit
+    let describePromise: (string, ~timeout: int=?, unit => promise<unit>) => unit
   }
 }
 
@@ -56,6 +59,7 @@ let testAll: (string, list<'a>, 'a => assertion) => unit
 let testAllPromise: (string, list<'a>, ~timeout: int=?, 'a => promise<assertion>) => unit
 
 let describe: (string, unit => unit) => unit
+let describePromise: (string, ~timeout: int=?, unit => promise<unit>) => unit
 
 @module("vitest") external beforeAll: (unit => unit) => unit = "beforeAll"
 let beforeAllPromise: (~timeout: int=?, unit => promise<'a>) => unit
@@ -72,6 +76,7 @@ module Only: {
   let testAll: (string, list<'a>, 'a => assertion) => unit
   let testAllPromise: (string, list<'a>, ~timeout: int=?, 'a => promise<assertion>) => unit
   let describe: (string, unit => unit) => unit
+  let describePromise: (string, ~timeout: int=?, unit => promise<unit>) => unit
 }
 
 module Skip: {
@@ -80,6 +85,7 @@ module Skip: {
   let testAll: (string, list<'a>, 'a => assertion) => unit
   let testAllPromise: (string, list<'a>, ~timeout: int=?, 'a => promise<assertion>) => unit
   let describe: (string, unit => unit) => unit
+  let describePromise: (string, ~timeout: int=?, unit => promise<unit>) => unit
 }
 
 module Todo: {
