@@ -1,5 +1,4 @@
 open Vitest
-module Promise = Js.Promise
 
 let () = {
   Only.test("Only.test", () => pass)
@@ -8,7 +7,7 @@ let () = {
   Only.testPromise("testPromise - timeout ok", ~timeout=1, () => Promise.resolve(pass))
 
   Only.testAll("testAll", list{"foo", "bar", "baz"}, input =>
-    if Js.String.length(input) === 3 {
+    if String.length(input) === 3 {
       pass
     } else {
       fail("")
@@ -18,7 +17,7 @@ let () = {
     input,
     output,
   )) =>
-    if Js.String.length(input) === output {
+    if String.length(input) === output {
       pass
     } else {
       fail("")
@@ -26,7 +25,7 @@ let () = {
   )
   Only.testAllPromise("testAllPromise", list{"foo", "bar", "baz"}, input =>
     Promise.resolve(
-      if Js.String.length(input) === 3 {
+      if String.length(input) === 3 {
         pass
       } else {
         fail("")
@@ -38,7 +37,7 @@ let () = {
     list{("foo", 3), ("barbaz", 6), ("bananas!", 8)},
     ((input, output)) =>
       Promise.resolve(
-        if Js.String.length(input) === output {
+        if String.length(input) === output {
           pass
         } else {
           fail("")

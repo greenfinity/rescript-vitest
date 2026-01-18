@@ -1,5 +1,14 @@
 @send external then: (promise<'a>, @uncurry ('a => promise<'b>)) => promise<'b> = "then"
-module Promise = Js.Promise
+
+// Helper to get an undefined value (replaces deprecated Js.undefined)
+external undefinedValue: undefined<'a> = "%undefined"
+
+// Helper to convert option to undefined (replaces deprecated Js.Undefined.fromOption)
+let undefinedFromOption = x =>
+  switch x {
+  | None => undefinedValue
+  | Some(x) => Obj.magic(x)
+  }
 
 type modifier<'a> = [
   | #Just('a)
@@ -28,18 +37,18 @@ type rec assertion =
   | LessThan(modifier<('a, 'a)>): assertion
   | LessThanOrEqual(modifier<('a, 'a)>): assertion
   | StringContains(modifier<(string, string)>): assertion
-  | StringMatch(modifier<(string, Js.Re.t)>): assertion
+  | StringMatch(modifier<(string, RegExp.t)>): assertion
   | Throws(modifier<unit => _>): assertion
   | MatchInlineSnapshot(_, string): assertion
   | MatchSnapshot(_): assertion
   | MatchSnapshotName(_, string): assertion
   | ThrowsMatchSnapshot(unit => _): assertion
   /* JS */
-  | Defined(modifier<Js.undefined<'a>>): assertion
+  | Defined(modifier<undefined<'a>>): assertion
   | Falsy(modifier<'a>): assertion
-  | Null(modifier<Js.null<_>>): assertion
+  | Null(modifier<Null.t<_>>): assertion
   | Truthy(modifier<'a>): assertion
-  | Undefined(modifier<Js.undefined<'a>>): assertion
+  | Undefined(modifier<undefined<'a>>): assertion
   | ObjectContains(modifier<({..}, array<string>)>): assertion
   | ObjectMatch(modifier<({..}, {..})>): assertion
 
@@ -136,150 +145,150 @@ module LLExpect: {
 module Runner = (A: Asserter) => {
   let affirm = A.affirm
   @module("vitest")
-  external _test: (string, @uncurry unit => Js.undefined<unit>) => unit = "test"
+  external _test: (string, @uncurry unit => undefined<unit>) => unit = "test"
   @module("vitest") @module("vitest")
-  external // external _testAsync: (string, (unit => unit) => Js.undefined<unit>, Js.Undefined.t<int>) => unit =
+  external // external _testAsync: (string, (unit => unit) => undefined<unit>, undefined<int>) => unit =
   //   "test"
 
-  _testPromise: (string, @uncurry unit => promise<'a>, Js.Undefined.t<int>) => unit = "test"
+  _testPromise: (string, @uncurry unit => promise<'a>, undefined<int>) => unit = "test"
 
   let test = (name, callback) =>
     _test(name, () => {
       affirm(callback())
-      Js.undefined
+      undefinedValue
     })
 
   let testPromise = (name, ~timeout=?, callback) =>
     _testPromise(
       name,
       () => then(callback(), a => a->A.affirm->Promise.resolve),
-      Js.Undefined.fromOption(timeout),
+      undefinedFromOption(timeout),
     )
 
   let testAll = (name, inputs, callback) =>
     List.forEach(inputs, input => {
-      let name = `${name} - ${input->Js.String.make}`
+      let name = `${name} - ${input->String.make}`
       _test(name, () => {
         affirm(callback(input))
-        Js.undefined
+        undefinedValue
       })
     })
 
   let testAllPromise = (name: string, inputs, ~timeout=?, callback) =>
     List.forEach(inputs, input => {
-      let name = `${name} - ${input->Js.String.make}`
+      let name = `${name} - ${input->String.make}`
       _testPromise(
         name,
         () => then(callback(input), a => a->A.affirm->Promise.resolve),
-        Js.Undefined.fromOption(timeout),
+        undefinedFromOption(timeout),
       )
     })
 
   @module("vitest")
-  external describe: (string, @uncurry unit => Js.undefined<unit>) => unit = "describe"
+  external describe: (string, @uncurry unit => undefined<unit>) => unit = "describe"
   let describe = (label, f) =>
     describe(label, () => {
       f()
-      Js.undefined
+      undefinedValue
     })
 
   @module("vitest")
   external describePromise: (
     string,
     ~timeout: int=?,
-    @uncurry unit => promise<Js.undefined<unit>>,
+    @uncurry unit => promise<undefined<unit>>,
   ) => unit = "describe"
   let describePromise = (label, ~timeout=?, f) =>
     describePromise(label, ~timeout?, async () => {
       await f()
-      Js.undefined
+      undefinedValue
     })
 
   @module("vitest") external beforeAll: (unit => unit) => unit = "beforeAll"
   @module("vitest")
-  external beforeAllPromise: (@uncurry unit => promise<'a>, Js.Undefined.t<int>) => unit =
+  external beforeAllPromise: (@uncurry unit => promise<'a>, undefined<int>) => unit =
     "beforeAll"
   let beforeAllPromise = (~timeout=?, callback) =>
-    beforeAllPromise(() => Promise.resolve(callback()), Js.Undefined.fromOption(timeout))
+    beforeAllPromise(() => Promise.resolve(callback()), undefinedFromOption(timeout))
 
   @module("vitest") external beforeEach: (unit => unit) => unit = "beforeEach"
   @module("vitest")
-  external beforeEachPromise: (@uncurry unit => promise<'a>, Js.Undefined.t<int>) => unit =
+  external beforeEachPromise: (@uncurry unit => promise<'a>, undefined<int>) => unit =
     "beforeEach"
   let beforeEachPromise = (~timeout=?, callback) =>
-    beforeEachPromise(() => Promise.resolve(callback()), Js.Undefined.fromOption(timeout))
+    beforeEachPromise(() => Promise.resolve(callback()), undefinedFromOption(timeout))
 
   @module("vitest") external afterAll: (unit => unit) => unit = "afterAll"
   @module("vitest")
-  external afterAllPromise: (@uncurry unit => promise<'a>, Js.Undefined.t<int>) => unit = "afterAll"
+  external afterAllPromise: (@uncurry unit => promise<'a>, undefined<int>) => unit = "afterAll"
   let afterAllPromise = (~timeout=?, callback) =>
-    afterAllPromise(() => Promise.resolve(callback()), Js.Undefined.fromOption(timeout))
+    afterAllPromise(() => Promise.resolve(callback()), undefinedFromOption(timeout))
 
   @module("vitest") external afterEach: (unit => unit) => unit = "afterEach"
   @module("vitest")
-  external afterEachPromise: (@uncurry unit => promise<'a>, Js.Undefined.t<int>) => unit =
+  external afterEachPromise: (@uncurry unit => promise<'a>, undefined<int>) => unit =
     "afterEach"
   let afterEachPromise = (~timeout=?, callback) =>
-    afterEachPromise(() => Promise.resolve(callback()), Js.Undefined.fromOption(timeout))
+    afterEachPromise(() => Promise.resolve(callback()), undefinedFromOption(timeout))
 
   module Only = {
     @module("vitest") @scope("it")
-    external _test: (string, @uncurry unit => Js.undefined<unit>) => unit = "only"
+    external _test: (string, @uncurry unit => undefined<unit>) => unit = "only"
 
     @module("vitest") @scope("it")
-    external _testPromise: (string, @uncurry unit => promise<'a>, Js.Undefined.t<int>) => unit =
+    external _testPromise: (string, @uncurry unit => promise<'a>, undefined<int>) => unit =
       "only"
 
     let test = (name, callback) =>
       _test(name, () => {
         affirm(callback())
-        Js.undefined
+        undefinedValue
       })
 
     let testPromise = (name, ~timeout=?, callback) =>
       _testPromise(
         name,
         () => then(callback(), a => a->affirm->Promise.resolve),
-        Js.Undefined.fromOption(timeout),
+        undefinedFromOption(timeout),
       )
 
     let testAll = (name, inputs, callback) =>
       List.forEach(inputs, input => {
-        let name = `${name} - ${input->Js.String.make}`
+        let name = `${name} - ${input->String.make}`
         _test(name, () => {
           affirm(callback(input))
-          Js.undefined
+          undefinedValue
         })
       })
 
     let testAllPromise = (name, inputs, ~timeout=?, callback) =>
       List.forEach(inputs, input => {
-        let name = `${name} - ${input->Js.String.make}`
+        let name = `${name} - ${input->String.make}`
         _testPromise(
           name,
           () => then(callback(input), a => a->A.affirm->Promise.resolve),
-          Js.Undefined.fromOption(timeout),
+          undefinedFromOption(timeout),
         )
       })
 
     @module("vitest") @scope("describe")
-    external describe: (string, @uncurry unit => Js.undefined<unit>) => unit = "only"
+    external describe: (string, @uncurry unit => undefined<unit>) => unit = "only"
     let describe = (label, f) =>
       describe(label, () => {
         f()
-        Js.undefined
+        undefinedValue
       })
 
     @module("vitest") @scope("describe")
     external describePromise: (
       string,
       ~timeout: int=?,
-      @uncurry unit => promise<Js.undefined<unit>>,
+      @uncurry unit => promise<undefined<unit>>,
     ) => unit = "only"
     let describePromise = (label, ~timeout=?, f) =>
       describePromise(label, ~timeout?, async () => {
         await f()
-        Js.undefined
+        undefinedValue
       })
   }
 
@@ -291,32 +300,32 @@ module Runner = (A: Asserter) => {
     let testPromise = (name, ~timeout as _=?, callback) => testPromise(name, callback)
     let testAll = (name, inputs, callback) =>
       List.forEach(inputs, input => {
-        let name = `${name} - ${input->Js.String.make}`
+        let name = `${name} - ${input->String.make}`
         test(name, () => callback(input))
       })
     let testAllPromise = (name, inputs, ~timeout as _=?, callback) =>
       List.forEach(inputs, input => {
-        let name = `${name} - ${input->Js.String.make}`
+        let name = `${name} - ${input->String.make}`
         testPromise(name, () => callback(input))
       })
     @module("vitest") @scope("describe")
-    external describe: (string, @uncurry unit => Js.undefined<unit>) => unit = "skip"
+    external describe: (string, @uncurry unit => undefined<unit>) => unit = "skip"
     let describe = (label, f) =>
       describe(label, () => {
         f()
-        Js.undefined
+        undefinedValue
       })
 
     @module("vitest") @scope("describe")
     external describePromise: (
       string,
       ~timeout: int=?,
-      @uncurry unit => promise<Js.undefined<unit>>,
+      @uncurry unit => promise<undefined<unit>>,
     ) => unit = "skip"
     let describePromise = (label, ~timeout=?, f) =>
       describePromise(label, ~timeout?, async () => {
         await f()
-        Js.undefined
+        undefinedValue
       })
   }
 
@@ -365,7 +374,7 @@ module Expect = {
   let toContainString = (b, p) => StringContains(mapMod(a => (a, p), b))
   let toEqual = (b, p) => Equal(mapMod(a => (a, p), b))
   let toHaveLength = (l, p) => ArrayLength(mapMod(a => (a, p), l))
-  let toMatch = (p, s) => StringMatch(mapMod(a => (a, Js.Re.fromString(s)), p))
+  let toMatch = (p, s) => StringMatch(mapMod(a => (a, RegExp.fromString(s)), p))
   let toMatchInlineSnapshot = (#Just(a), inlineSnapshot) => MatchInlineSnapshot(a, inlineSnapshot)
   let toMatchRe = (re, p) => StringMatch(mapMod(a => (a, p), re))
   let toMatchSnapshot = (#Just(a)) => MatchSnapshot(a)
@@ -478,9 +487,9 @@ module Vi = {
   @module("vitest") @scope("vi") external useRealTimers: unit => unit = "useRealTimers"
 
   @module("vitest") @scope("vi") external setSystemTimeWithInt: int => unit = "setSystemTime"
-  @module("vitest") @scope("vi") external setSystemTimeWithDate: Js.Date.t => unit = "setSystemTime"
+  @module("vitest") @scope("vi") external setSystemTimeWithDate: Date.t => unit = "setSystemTime"
 
-  type systemTime = [#int(int) | #date(Js.Date.t)]
+  type systemTime = [#int(int) | #date(Date.t)]
   let setSystemTime = systemTime =>
     switch systemTime {
     | #date(date) => setSystemTimeWithDate(date)
@@ -496,7 +505,7 @@ module Mock = {
   /* genMockFromModule */
   @module("vitest") external resetModules: unit => unit = "resetModules"
   @module("vitest") @scope("vi")
-  external inferred_fn: unit => MockJs.fn<'a => Js.undefined<'b>, 'a, Js.undefined<'b>> =
+  external inferred_fn: unit => MockJs.fn<'a => undefined<'b>, 'a, undefined<'b>> =
     "fn" /* not sure how useful this really is */
   @module("vitest") @scope("vi") external fn: ('a => 'b) => MockJs.fn<'a => 'b, 'a, 'b> = "fn"
   @module("vitest") @scope("vi")
