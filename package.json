@@ -31,17 +31,16 @@
   "homepage": "https://github.com/greenfinity/rescript-vitest#readme",
   "files": [
     "src",
-    "lib/bs",
     "rescript.json",
     "__tests__/.gitkeep"
   ],
   "peerDependencies": {
-    "rescript": "^12.0.0-beta.4"
+    "rescript": "^12.0.0"
   },
   "devDependencies": {
     "auto-changelog": "^2.5.0",
     "nodemon": "^3.1.7",
-    "rescript": "^12.0.0-beta.4"
+    "rescript": "^12.0.0"
   },
   "dependencies": {
     "@vitest/coverage-v8": "^2.1.8",

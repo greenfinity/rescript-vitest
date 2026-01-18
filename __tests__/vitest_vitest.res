@@ -1,7 +1,6 @@
 open Vitest
 open Expect
 // open! Expect.Operators
-module Promise = Js.Promise
 
 @val external setTimeout: (unit => unit, int) => unit = "setTimeout"
 @val external setImmediate: (unit => unit) => unit = "setImmediate"
@@ -26,7 +25,7 @@ let () = describe("Fake Timers", () => {
     Vi.runAllTicks()
 
     await Promise.make(
-      (~resolve, ~reject as _) =>
+      (resolve, _) =>
         nextTick(() => resolve(expect((before, flag.contents))->toEqual((false, true)))),
     )
   })
@@ -96,7 +95,7 @@ let () = describe("Fake Timers", () => {
     Vi.useFakeTimers(~implementation=#legacy, ())
     Vi.useRealTimers()
 
-    await Promise.make((~resolve, ~reject as _) => nextTick(() => resolve(pass)))
+    await Promise.make((resolve, _) => nextTick(() => resolve(pass)))
   })
 })
 

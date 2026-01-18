@@ -121,7 +121,7 @@ module Expect: {
   let toHaveLength: ([< partial<array<'a>>], int) => assertion
   let toMatch: ([< partial<string>], string) => assertion
   let toMatchInlineSnapshot: (plainPartial<_>, string) => assertion
-  let toMatchRe: ([< partial<string>], Js.Re.t) => assertion
+  let toMatchRe: ([< partial<string>], RegExp.t) => assertion
   let toMatchSnapshot: plainPartial<_> => assertion
   let toMatchSnapshotWithName: (plainPartial<_>, string) => assertion
   let toThrow: [< partial<unit => _>] => assertion
@@ -148,11 +148,11 @@ module Expect: {
 module ExpectJs: {
   include module type of Expect
 
-  let toBeDefined: [< partial<Js.undefined<_>>] => assertion
+  let toBeDefined: [< partial<undefined<_>>] => assertion
   let toBeFalsy: [< partial<_>] => assertion
-  let toBeNull: [< partial<Js.null<_>>] => assertion
+  let toBeNull: [< partial<Null.t<_>>] => assertion
   let toBeTruthy: [< partial<_>] => assertion
-  let toBeUndefined: [< partial<Js.undefined<_>>] => assertion
+  let toBeUndefined: [< partial<undefined<_>>] => assertion
   let toContainProperties: ([< partial<{..}>], array<string>) => assertion
   let toMatchObject: ([< partial<{..}>], {..}) => assertion
 }
@@ -199,7 +199,7 @@ module Vi: {
   external useFakeTimersImplementation: fakeTimerImplementation => unit = "useFakeTimers"
   let useFakeTimers: (~implementation: fakeTimerImplementation=?, unit) => unit
   @module("vitest") @scope("vi") external useRealTimers: unit => unit = "useRealTimers"
-  type systemTime = [#int(int) | #date(Js.Date.t)]
+  type systemTime = [#int(int) | #date(Date.t)]
   let setSystemTime: systemTime => unit
 }
 
@@ -210,7 +210,7 @@ module Mock: {
   @module("vitest") external enableAutomock: unit => unit = "enableAutomock"
   @module("vitest") external resetModules: unit => unit = "resetModules"
   @module("vitest") @scope("vi")
-  external inferred_fn: unit => MockJs.fn<'a => Js.undefined<'b>, 'a, Js.undefined<'b>> = "fn"
+  external inferred_fn: unit => MockJs.fn<'a => undefined<'b>, 'a, undefined<'b>> = "fn"
   @module("vitest") @scope("vi") external fn: ('a => 'b) => MockJs.fn<'a => 'b, 'a, 'b> = "fn"
   @module("vitest") @scope("vi")
   external fn2: (('a, 'b) => 'c) => MockJs.fn<('a, 'b) => 'c, ('a, 'b), 'c> = "fn"

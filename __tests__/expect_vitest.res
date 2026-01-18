@@ -1,5 +1,11 @@
 open Vitest
 
+// Helpers for creating undefined/null values in tests
+// (replaces deprecated Js.Undefined.return and Js.Undefined.empty)
+external makeUndefined: 'a => undefined<'a> = "%identity"
+external emptyUndefined: undefined<'a> = "%undefined"
+external nullValue: Null.t<'a> = "%null"
+
 type test_record = {value: string}
 
 let () = {
@@ -84,21 +90,21 @@ let () = {
   describe("ExpectJs", () => {
     open ExpectJs
 
-    test("toBeDefined", () => expect(Js.Undefined.return(3))->toBeDefined)
-    test("toBeFalsy", () => expect(Js.Float._NaN)->toBeFalsy)
-    test("toBeNull", () => expect(Js.null)->toBeNull)
+    test("toBeDefined", () => expect(makeUndefined(3))->toBeDefined)
+    test("toBeFalsy", () => expect(Float.Constants.nan)->toBeFalsy)
+    test("toBeNull", () => expect(nullValue)->toBeNull)
     test("toBeTruthy", () => expect([])->toBeTruthy)
-    test("toBeUndefined", () => expect(Js.Undefined.empty)->toBeUndefined)
+    test("toBeUndefined", () => expect(emptyUndefined)->toBeUndefined)
     test("toContainProperties", () =>
       expect({"foo": 0, "bar": true})->toContainProperties(["foo", "bar"])
     )
     test("toMatchObject", () => expect({"a": 1, "b": 2, "c": 3})->toMatchObject({"a": 1, "b": 2}))
 
-    test("not toBeDefined", () => expect(Js.undefined)->not_->toBeDefined)
+    test("not toBeDefined", () => expect(emptyUndefined)->not_->toBeDefined)
     test("not toBeFalsy", () => expect([])->not_->toBeFalsy)
-    test("not toBeNull", () => expect(Js.Null.return(4))->not_->toBeNull)
-    test("not toBeTruthy", () => expect(Js.Float._NaN)->not_->toBeTruthy)
-    test("not toBeUndefined", () => expect(Js.Undefined.return(4))->not_->toBeUndefined)
+    test("not toBeNull", () => expect(Null.make(4))->not_->toBeNull)
+    test("not toBeTruthy", () => expect(Float.Constants.nan)->not_->toBeTruthy)
+    test("not toBeUndefined", () => expect(makeUndefined(4))->not_->toBeUndefined)
     test("not toContainProperties", () =>
       expect({"foo": 0, "bar": true})->not_->toContainProperties(["foo", "zoo"])
     )

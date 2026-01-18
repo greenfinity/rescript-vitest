@@ -1,6 +1,11 @@
 open Vitest
 open ExpectJs
 
+// Helpers for creating undefined values in tests
+// (replaces deprecated makeUndefined and emptyUndefined)
+external makeUndefined: 'a => undefined<'a> = "%identity"
+external emptyUndefined: undefined<'a> = "%undefined"
+
 /* TODO: move to BS std lib */
 @send external bind: ('a => 'b, 'c, 'a, 'a) => 'b = "bind"
 @send external bindThis: ('a => 'b, 'c) => 'a => 'b = "bind"
@@ -89,14 +94,14 @@ let _ = {
 
     test("mockReset - resets implementations", _ => {
       let mockFn = Mock.inferred_fn()
-      mockFn->MockJs.mockReturnValue(Js.Undefined.return(128))->ignore
+      mockFn->MockJs.mockReturnValue(makeUndefined(128))->ignore
       let fn = MockJs.fn(mockFn)
 
       let before = call(fn, ())
       mockFn->MockJs.mockReset
       let after = call(fn, ())
 
-      expect((before, after))->toEqual((Js.Undefined.return(128), Js.Undefined.empty))
+      expect((before, after))->toEqual((makeUndefined(128), emptyUndefined))
     })
 
     test("mockImplementation - sets implementation to use for subsequent invocations", _ => {
@@ -104,12 +109,12 @@ let _ = {
       let fn = MockJs.fn(mockFn)
 
       let before = call(fn, 10)
-      mockFn->MockJs.mockImplementation(a => Js.Undefined.return(Int.toString(a)))->ignore
+      mockFn->MockJs.mockImplementation(a => makeUndefined(Int.toString(a)))->ignore
 
       expect((before, call(fn, 18), call(fn, 24)))->toEqual((
-        Js.Undefined.empty,
-        Js.Undefined.return("18"),
-        Js.Undefined.return("24"),
+        emptyUndefined,
+        makeUndefined("18"),
+        makeUndefined("24"),
       ))
     })
 
@@ -118,16 +123,16 @@ let _ = {
       let fn = MockJs.fn(mockFn)
 
       let before = call(fn, 10)
-      mockFn->MockJs.mockImplementationOnce(a => Js.Undefined.return(Int.toString(a)))->ignore
+      mockFn->MockJs.mockImplementationOnce(a => makeUndefined(Int.toString(a)))->ignore
       mockFn
-      ->MockJs.mockImplementationOnce(a => Js.Undefined.return(Int.toString(a * 2)))
+      ->MockJs.mockImplementationOnce(a => makeUndefined(Int.toString(a * 2)))
       ->ignore
 
       expect((before, call(fn, 18), call(fn, 24), call(fn, 12)))->toEqual((
-        Js.Undefined.empty,
-        Js.Undefined.return("18"),
-        Js.Undefined.return("48"),
-        Js.Undefined.empty,
+        emptyUndefined,
+        makeUndefined("18"),
+        makeUndefined("48"),
+        emptyUndefined,
       ))
     })
 
@@ -140,9 +145,9 @@ let _ = {
       mockFn->MockJs.mockReturnThis->ignore
 
       expect((before, call(fn, ()), call(fn, ())))->toEqual((
-        Js.Undefined.empty,
-        Js.Undefined.return(this),
-        Js.Undefined.return(this),
+        emptyUndefined,
+        makeUndefined(this),
+        makeUndefined(this),
       ))
     })
 
@@ -151,12 +156,12 @@ let _ = {
       let fn = MockJs.fn(mockFn)
 
       let before = call(fn, 10)
-      mockFn->MockJs.mockReturnValue(Js.Undefined.return(146))->ignore
+      mockFn->MockJs.mockReturnValue(makeUndefined(146))->ignore
 
       expect((before, call(fn, 18), call(fn, 24)))->toEqual((
-        Js.Undefined.empty,
-        Js.Undefined.return(146),
-        Js.Undefined.return(146),
+        emptyUndefined,
+        makeUndefined(146),
+        makeUndefined(146),
       ))
     })
 
@@ -165,14 +170,14 @@ let _ = {
       let fn = MockJs.fn(mockFn)
 
       let before = call(fn, 10)
-      mockFn->MockJs.mockReturnValueOnce(Js.Undefined.return(29))->ignore
-      mockFn->MockJs.mockReturnValueOnce(Js.Undefined.return(41))->ignore
+      mockFn->MockJs.mockReturnValueOnce(makeUndefined(29))->ignore
+      mockFn->MockJs.mockReturnValueOnce(makeUndefined(41))->ignore
 
       expect((before, call(fn, 18), call(fn, 24), call(fn, 12)))->toEqual((
-        Js.Undefined.empty,
-        Js.Undefined.return(29),
-        Js.Undefined.return(41),
-        Js.Undefined.empty,
+        emptyUndefined,
+        makeUndefined(29),
+        makeUndefined(41),
+        emptyUndefined,
       ))
     })
 
@@ -295,7 +300,7 @@ let _ = {
     expect
       (before, fn (), fn ())
     -> toEqual
-      (Js.Undefined.empty, Js.Undefined.return this, Js.Undefined.return this)
+      (emptyUndefined, makeUndefined this, makeUndefined this)
   );
  */
 

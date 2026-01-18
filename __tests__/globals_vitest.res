@@ -1,5 +1,4 @@
 open Vitest
-module Promise = Js.Promise
 
 let () = {
   test("pass", () => pass)
@@ -19,18 +18,18 @@ let () = {
   testPromise("testPromise - timeout ok", ~timeout=1, () => Promise.resolve(pass))
 
   Skip.testPromise("testPromise - timeout fail", ~timeout=1, () =>
-    Promise.make((~resolve as _, ~reject as _) => ())
+    Promise.make((_, _) => ())
   )
 
   testAll("testAll", list{"foo", "bar", "baz"}, input =>
-    if Js.String.length(input) === 3 {
+    if String.length(input) === 3 {
       pass
     } else {
       fail("")
     }
   )
   testAll("testAll - tuples", list{("foo", 3), ("barbaz", 6), ("bananas!", 8)}, ((input, output)) =>
-    if Js.String.length(input) === output {
+    if String.length(input) === output {
       pass
     } else {
       fail("")
@@ -39,7 +38,7 @@ let () = {
 
   testAllPromise("testAllPromise", list{"foo", "bar", "baz"}, input =>
     Promise.resolve(
-      if Js.String.length(input) === 3 {
+      if String.length(input) === 3 {
         pass
       } else {
         fail("")
@@ -51,7 +50,7 @@ let () = {
     output,
   )) =>
     Promise.resolve(
-      if Js.String.length(input) === output {
+      if String.length(input) === output {
         pass
       } else {
         fail("")
@@ -147,7 +146,7 @@ let () = {
     })
 
     Skip.describe("timeout should fail suite", () => {
-      beforeAllPromise(~timeout=1, () => Promise.make((~resolve as _, ~reject as _) => ()))
+      beforeAllPromise(~timeout=1, () => Promise.make((_, _) => ()))
       test("", () => pass) /* runner will crash if there's no tests */
     })
   })
@@ -236,7 +235,7 @@ let () = {
     })
 
     Skip.describe("timeout should fail suite", () => {
-      beforeEachPromise(~timeout=1, () => Promise.make((~resolve as _, ~reject as _) => ()))
+      beforeEachPromise(~timeout=1, () => Promise.make((_, _) => ()))
       test("", () => pass) /* runner will crash if there's no tests */
     })
   })
@@ -381,7 +380,7 @@ let () = {
     })
 
     Skip.describe("timeout should fail suite", () => {
-      afterAllPromise(~timeout=1, () => Promise.make((~resolve as _, ~reject as _) => ()))
+      afterAllPromise(~timeout=1, () => Promise.make((_, _) => ()))
       test("", () => pass) /* runner will crash if there's no tests */
     })
   })
@@ -470,7 +469,7 @@ let () = {
     })
 
     Skip.describe("timeout should fail suite", () => {
-      afterEachPromise(~timeout=1, () => Promise.make((~resolve as _, ~reject as _) => ()))
+      afterEachPromise(~timeout=1, () => Promise.make((_, _) => ()))
       test("", () => pass) /* runner will crash if there's no tests */
     })
   })
@@ -485,11 +484,11 @@ let () = {
 
     Skip.testPromise("Skip.testPromise", () => Promise.resolve(pass))
     Skip.testPromise("testPromise - timeout", ~timeout=1, () =>
-      Promise.make((~resolve as _, ~reject as _) => ())
+      Promise.make((_, _) => ())
     )
 
     Skip.testAll("testAll", list{"foo", "bar", "baz"}, input =>
-      if Js.String.length(input) === 3 {
+      if String.length(input) === 3 {
         pass
       } else {
         fail("")
@@ -499,7 +498,7 @@ let () = {
       input,
       output,
     )) =>
-      if Js.String.length(input) === output {
+      if String.length(input) === output {
         pass
       } else {
         fail("")
@@ -507,7 +506,7 @@ let () = {
     )
     Skip.testAllPromise("testAllPromise", list{"foo", "bar", "baz"}, input =>
       Promise.resolve(
-        if Js.String.length(input) === 3 {
+        if String.length(input) === 3 {
           pass
         } else {
           fail("")
@@ -519,7 +518,7 @@ let () = {
       list{("foo", 3), ("barbaz", 6), ("bananas!", 8)},
       ((input, output)) =>
         Promise.resolve(
-          if Js.String.length(input) === output {
+          if String.length(input) === output {
             pass
           } else {
             fail("")
